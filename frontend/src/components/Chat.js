@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { chatAPI, userAPI } from '../api';
+import { chatAPI, userAPI, giftsAPI, personalityAPI } from '../api';
+import Room from './Room';
+import GiftAnimation from './GiftAnimation';
 import './Chat.css';
+
+const THEMES = [
+  { id: 'pink', label: 'Pink Bedroom' },
+  { id: 'red', label: 'Red Room' },
+  { id: 'space', label: 'Neon Space' },
+];
 
 function Chat() {
   const [messages, setMessages] = useState([]);
@@ -9,12 +17,23 @@ function Chat() {
   const [coins, setCoins] = useState(0);
   const [useCoins, setUseCoins] = useState(false);
   const [error, setError] = useState('');
+  const [theme, setTheme] = useState(localStorage.getItem('roomTheme') || 'pink');
+  const [gfName, setGfName] = useState('Luna');
+  const [gifts, setGifts] = useState([]);
+  const [showGifts, setShowGifts] = useState(false);
+  const [playingGift, setPlayingGift] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     loadCoins();
     loadChatHistory();
+    loadGifts();
+    personalityAPI.get().then((r) => setGfName(r.data.name || 'Luna')).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('roomTheme', theme);
+  }, [theme]);
 
   useEffect(() => {
     scrollToBottom();
@@ -33,15 +52,24 @@ function Chat() {
     }
   };
 
+  const loadGifts = async () => {
+    try {
+      const response = await giftsAPI.list();
+      setGifts(response.data);
+    } catch (err) {
+      console.error('Failed to load gifts:', err);
+    }
+  };
+
   const loadChatHistory = async () => {
     try {
       const response = await chatAPI.getHistory();
-      setMessages(response.data.map((msg) => ({
-        type: 'history',
-        user: msg.message,
-        ai: msg.response,
-        coins: msg.coins_spent,
-      })));
+      const history = [];
+      [...response.data].reverse().forEach((msg) => {
+        history.push({ type: 'user', text: msg.message });
+        history.push({ type: 'ai', text: msg.response });
+      });
+      setMessages(history);
     } catch (err) {
       console.error('Failed to load chat history:', err);
     }
@@ -56,76 +84,129 @@ function Chat() {
     setError('');
     setLoading(true);
 
-    // Add user message immediately
     setMessages((prev) => [...prev, { type: 'user', text: userMessage }]);
 
     try {
       const response = await chatAPI.sendMessage(userMessage, useCoins);
-
-      // Add AI response
-      setMessages((prev) => [
-        ...prev,
-        { type: 'ai', text: response.data.response, coins: response.data.coins },
-      ]);
-
+      setMessages((prev) => [...prev, { type: 'ai', text: response.data.response }]);
       setCoins(response.data.coins);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to send message');
-      // Remove the last user message if it failed
       setMessages((prev) => prev.slice(0, -1));
     } finally {
       setLoading(false);
     }
   };
 
+  const handleBuyGift = async (gift) => {
+    if (coins < gift.price || playingGift) return;
+    setError('');
+    setShowGifts(false);
+
+    try {
+      const response = await giftsAPI.buy(gift.id);
+      setCoins(response.data.coins);
+      setPlayingGift(response.data.gift);
+
+      setMessages((prev) => [
+        ...prev,
+        { type: 'user', text: `🎁 Sent a ${gift.name} ${gift.emoji}` },
+        { type: 'ai', text: response.data.reaction },
+      ]);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Gift failed to send');
+    }
+  };
+
   const insufficientCoins = useCoins && coins < 5;
 
   return (
-    <div className="chat-container">
+    <div className={`chat-container theme-${theme}`}>
+      {playingGift && (
+        <GiftAnimation gift={playingGift} onDone={() => setPlayingGift(null)} />
+      )}
+
       <div className="chat-header">
-        <h2>💕 Luna</h2>
+        <h2>💕 {gfName}</h2>
+        <div className="theme-switcher">
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              title={t.label}
+              className={`theme-dot dot-${t.id} ${theme === t.id ? 'active' : ''}`}
+              onClick={() => setTheme(t.id)}
+            />
+          ))}
+        </div>
         <div className="coin-badge">🪙 {coins}</div>
       </div>
 
-      <div className="messages-container">
-        {messages.length === 0 && (
-          <div className="welcome-message">
-            <h3>Hey there! 💕</h3>
-            <p>I'm Luna, your AI girlfriend. Let's chat!</p>
-            <p>Start by saying hello!</p>
-          </div>
-        )}
+      <div className="room-viewport">
+        <Room theme={theme} gfName={gfName} />
 
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`message ${msg.type}`}>
-            {msg.type === 'user' && <div className="message-text">{msg.text}</div>}
-            {msg.type === 'ai' && <div className="message-text">{msg.text}</div>}
-            {msg.type === 'history' && (
-              <>
-                <div className="history-label">You</div>
-                <div className="message-text">{msg.user}</div>
-                <div className="history-label">Luna</div>
-                <div className="message-text">{msg.ai}</div>
-                {msg.coins > 0 && <div className="coin-cost">-{msg.coins} 🪙</div>}
-              </>
-            )}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
+        <div className="messages-container">
+          {messages.length === 0 && (
+            <div className="welcome-message">
+              <h3>Hey there! 💕</h3>
+              <p>I'm {gfName}... come closer and talk to me.</p>
+            </div>
+          )}
+
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`message ${msg.type}`}>
+              <div className="message-text">{msg.text}</div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {error && <div className="error-banner">{error}</div>}
 
+      {showGifts && (
+        <div className="gift-drawer">
+          {gifts.map((gift) => (
+            <button
+              key={gift.id}
+              className={`gift-card ${coins < gift.price ? 'locked' : ''}`}
+              onClick={() => handleBuyGift(gift)}
+              disabled={coins < gift.price}
+            >
+              <span className="gift-card-emoji">{gift.emoji}</span>
+              <span className="gift-card-name">{gift.name}</span>
+              <span className="gift-card-price">🪙 {gift.price}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       <form onSubmit={handleSendMessage} className="chat-input-form">
         <div className="input-controls">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            disabled={loading}
-            className="chat-input"
-          />
+          <div className="input-row">
+            <button
+              type="button"
+              className={`gift-toggle-btn ${showGifts ? 'open' : ''}`}
+              onClick={() => setShowGifts(!showGifts)}
+              title="Send a gift"
+            >
+              🎁
+            </button>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={`Message ${gfName}...`}
+              disabled={loading}
+              className="chat-input"
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim() || insufficientCoins}
+              className="send-btn"
+            >
+              {loading ? '💭' : '💬'}
+            </button>
+          </div>
 
           <div className="controls-row">
             <label className="checkbox-label">
@@ -133,23 +214,14 @@ function Chat() {
                 type="checkbox"
                 checked={useCoins}
                 onChange={(e) => setUseCoins(e.target.checked)}
-                disabled={loading || insufficientCoins}
+                disabled={loading}
               />
               <span>Premium (-5 🪙)</span>
             </label>
-
-            <button
-              type="submit"
-              disabled={loading || !input.trim() || insufficientCoins}
-              className="send-btn"
-            >
-              {loading ? '...' : '💬 Send'}
-            </button>
+            {insufficientCoins && (
+              <span className="warning">Not enough coins</span>
+            )}
           </div>
-
-          {insufficientCoins && (
-            <div className="warning">Insufficient coins for premium chat</div>
-          )}
         </div>
       </form>
     </div>

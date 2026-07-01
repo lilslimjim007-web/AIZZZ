@@ -1,0 +1,195 @@
+.gift-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(40, 0, 40, 0.55) 0%, rgba(5, 0, 15, 0.88) 100%);
+  animation: overlay-in 0.3s ease, overlay-out 0.6s ease 3.6s forwards;
+  pointer-events: none;
+  perspective: 900px;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlay-out {
+  to { opacity: 0; }
+}
+
+/* Spotlight cone from above */
+.spotlight {
+  position: absolute;
+  top: -5%;
+  left: 50%;
+  width: 340px;
+  height: 65%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 105, 180, 0.35) 0%,
+    rgba(255, 105, 180, 0.12) 60%,
+    transparent 100%
+  );
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  filter: blur(6px);
+  animation: spotlight-flicker 2s ease-in-out infinite;
+}
+
+@keyframes spotlight-flicker {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+/* The 3D stage */
+.gift-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-style: preserve-3d;
+  animation: stage-float 4.2s ease-in-out forwards;
+}
+
+@keyframes stage-float {
+  0% { transform: translateY(60px) scale(0.3); opacity: 0; }
+  12% { transform: translateY(0) scale(1); opacity: 1; }
+  78% { transform: translateY(-10px) scale(1); opacity: 1; }
+  100% { transform: translateY(-140px) scale(0.7); opacity: 0; }
+}
+
+/* The gift itself - spinning in 3D */
+.gift-item {
+  font-size: 7rem;
+  line-height: 1;
+  animation: spin-3d 1.6s linear infinite, item-bob 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 25px rgba(255, 105, 180, 0.9))
+          drop-shadow(0 0 60px rgba(255, 20, 147, 0.5));
+  z-index: 3;
+}
+
+@keyframes spin-3d {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+@keyframes item-bob {
+  0%, 100% { margin-bottom: 0; }
+  50% { margin-bottom: 12px; }
+}
+
+/* Neon rings orbiting the pedestal */
+.gift-ring {
+  position: absolute;
+  bottom: 18px;
+  width: 180px;
+  height: 48px;
+  border: 3px solid rgba(255, 20, 147, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(255, 20, 147, 0.8), inset 0 0 18px rgba(255, 20, 147, 0.4);
+  animation: ring-pulse 1.4s ease-in-out infinite;
+  transform: rotateX(70deg);
+}
+
+.gift-ring.ring-2 {
+  width: 230px;
+  height: 62px;
+  bottom: 12px;
+  border-color: rgba(0, 255, 255, 0.55);
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.55);
+  animation-delay: 0.7s;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { opacity: 0.9; transform: rotateX(70deg) scale(1); }
+  50% { opacity: 0.5; transform: rotateX(70deg) scale(1.08); }
+}
+
+/* Rotating display stand */
+.pedestal {
+  margin-top: -8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.pedestal-top {
+  width: 130px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 35%, #ffd9ec 0%, #ff69b4 45%, #c71585 100%);
+  box-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 6px 18px rgba(0, 0, 0, 0.6);
+  animation: pedestal-glow 1.8s ease-in-out infinite;
+}
+
+.pedestal-base {
+  width: 80px;
+  height: 42px;
+  margin-top: -6px;
+  background: linear-gradient(to bottom, #8b1a62, #3d0a2e);
+  border-radius: 0 0 18px 18px;
+  box-shadow: inset 0 -8px 14px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pedestal-glow {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 6px 18px rgba(0, 0, 0, 0.6); }
+  50% { box-shadow: 0 0 55px rgba(255, 105, 180, 1), 0 6px 18px rgba(0, 0, 0, 0.6); }
+}
+
+/* Rising sparkles */
+.sparkle {
+  position: absolute;
+  bottom: 8%;
+  animation: sparkle-rise 2.6s ease-out infinite;
+  opacity: 0;
+}
+
+@keyframes sparkle-rise {
+  0% { transform: translateY(0) scale(0.4); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-58vh) scale(1.15) rotate(30deg); opacity: 0; }
+}
+
+/* TikTok-style banner */
+.gift-banner {
+  position: absolute;
+  bottom: 12%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(90deg, rgba(255, 20, 147, 0.92), rgba(148, 0, 211, 0.92));
+  padding: 0.7rem 1.6rem;
+  border-radius: 40px;
+  box-shadow: 0 0 25px rgba(255, 20, 147, 0.65);
+  animation: banner-slide 0.5s cubic-bezier(0.18, 1.4, 0.4, 1) 0.2s both;
+}
+
+@keyframes banner-slide {
+  from { transform: translateX(-120%) ; opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.gift-banner-emoji {
+  font-size: 2rem;
+}
+
+.gift-banner-text {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.gift-banner-text strong {
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+}
+
+.gift-banner-text span {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}

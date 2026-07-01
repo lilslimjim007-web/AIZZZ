@@ -35,6 +35,11 @@ export const coinsAPI = {
   spendCoins: (amount, description) => api.post('/coins/spend', { amount, description }),
 };
 
+export const giftsAPI = {
+  list: () => api.get('/gifts'),
+  buy: (giftId) => api.post('/gifts/buy', { giftId }),
+};
+
 export const personalityAPI = {
   get: () => api.get('/personality'),
   update: (name, personality) => api.put('/personality', { name, personality }),

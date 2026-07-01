@@ -264,6 +264,52 @@ app.put('/api/personality', verifyToken, (req, res) => {
   );
 });
 
+// Gift catalog - TikTok-style gifts with coin prices and Luna's reactions
+const GIFTS = [
+  { id: 'rose', name: 'Rose', emoji: '🌹', price: 10, reaction: "A rose? You're such a romantic... I love it! 🌹💕" },
+  { id: 'teddy', name: 'Teddy Bear', emoji: '🧸', price: 25, reaction: "Omg he's SO cuddly! I'm naming him after you 🧸💕" },
+  { id: 'makeup', name: 'Makeup Kit', emoji: '💄', price: 30, reaction: "Yes! Now I can get all dolled up for our next date 💄😘" },
+  { id: 'heels', name: 'Stilettos', emoji: '👠', price: 40, reaction: "These heels are GORGEOUS! I'll wear them just for you 👠🔥" },
+  { id: 'purse', name: 'Designer Purse', emoji: '👜', price: 50, reaction: "STOP IT. This purse is EVERYTHING! You spoil me so much 👜✨" },
+  { id: 'lingerie', name: 'Lingerie', emoji: '👙', price: 75, reaction: "Oh my... someone's feeling bold tonight 😏💕 I love it..." },
+  { id: 'ring', name: 'Diamond Ring', emoji: '💍', price: 150, reaction: "A diamond ring?! Baby... are you asking what I think you're asking? 💍🥺💕" },
+  { id: 'diamond', name: 'Diamond', emoji: '💎', price: 200, reaction: "Diamonds really are a girl's best friend... after you 💎😘" },
+  { id: 'car', name: 'Sports Car', emoji: '🏎️', price: 300, reaction: "A CAR?! Are you serious right now?! Take me for a drive! 🏎️💨🔥" },
+  { id: 'rocket', name: 'Space Trip', emoji: '🚀', price: 500, reaction: "A trip to SPACE?! With you? I'd fly anywhere, baby 🚀💫" },
+];
+
+app.get('/api/gifts', verifyToken, (req, res) => {
+  res.json(GIFTS.map(({ id, name, emoji, price }) => ({ id, name, emoji, price })));
+});
+
+app.post('/api/gifts/buy', verifyToken, (req, res) => {
+  const gift = GIFTS.find((g) => g.id === req.body.giftId);
+  if (!gift) return res.status(400).json({ error: 'Unknown gift' });
+
+  db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (err, user) => {
+    if (err || !user) return res.status(500).json({ error: 'Database error' });
+    if (user.coins < gift.price) {
+      return res.status(400).json({ error: 'Not enough coins! 🪙' });
+    }
+
+    db.run('UPDATE users SET coins = coins - ?, experience = experience + 5 WHERE id = ?', [gift.price, req.userId], () => {
+      db.run(
+        'INSERT INTO coin_transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
+        [req.userId, -gift.price, 'gift', `Gift: ${gift.name}`]
+      );
+      db.run(
+        'INSERT INTO chat_history (user_id, message, response, coins_spent) VALUES (?, ?, ?, ?)',
+        [req.userId, `🎁 Sent a ${gift.name} ${gift.emoji}`, gift.reaction, gift.price],
+        () => {
+          db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (err2, row) => {
+            res.json({ coins: row?.coins || 0, reaction: gift.reaction, gift: { id: gift.id, name: gift.name, emoji: gift.emoji, price: gift.price } });
+          });
+        }
+      );
+    });
+  });
+});
+
 // Serve frontend static files and catch-all for SPA
 const frontendBuildPath = path.join(__dirname, '../frontend/build');
 app.use(express.static(frontendBuildPath));

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('./database');
 const { Anthropic } = require('@anthropic-ai/sdk');
+const path = require('path');
 
 dotenv.config();
 
@@ -263,7 +264,16 @@ app.put('/api/personality', verifyToken, (req, res) => {
   );
 });
 
+// Serve frontend static files and catch-all for SPA
+const frontendBuildPath = path.join(__dirname, '../frontend/build');
+app.use(express.static(frontendBuildPath));
+
+// Serve React app for all other routes (SPA fallback)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('API ready at http://localhost:' + PORT);
+  console.log('Open browser at http://localhost:' + PORT);
 });

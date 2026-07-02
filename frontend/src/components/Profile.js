@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { userAPI, personalityAPI, coinsAPI } from '../api';
+import { tierFor } from '../relationship';
 import './Profile.css';
 
 function Profile() {
@@ -72,6 +73,8 @@ function Profile() {
     return <div className="profile-container">Loading...</div>;
   }
 
+  const tier = tierFor(profile.affection || 0);
+
   return (
     <div className="profile-container">
       <div className="profile-card">
@@ -93,6 +96,20 @@ function Profile() {
           <div className="stat">
             <span className="stat-label">Experience</span>
             <span className="stat-value">✨ {profile.experience}</span>
+          </div>
+          <div className="stat stat-wide">
+            <span className="stat-label">Relationship</span>
+            <span className="stat-value">
+              {tier.current.emoji} {tier.current.name}
+            </span>
+            <div className="stat-track">
+              <div className="stat-fill" style={{ width: `${tier.progress * 100}%` }} />
+            </div>
+            <span className="stat-sub">
+              {tier.next
+                ? `${profile.affection || 0} / ${tier.next.min} affection to ${tier.next.name}`
+                : 'Maximum affection reached 💞'}
+            </span>
           </div>
         </div>
 
@@ -172,11 +189,12 @@ function Profile() {
       <div className="info-card">
         <h3>💡 How It Works</h3>
         <ul>
-          <li>💬 Chat with Luna and earn experience</li>
-          <li>🪙 Use coins for premium responses</li>
-          <li>⭐ Level up by chatting more</li>
-          <li>💕 Customize your girlfriend's personality</li>
-          <li>🎁 Get daily bonus coins</li>
+          <li>💬 Chat with her to earn XP and build affection</li>
+          <li>⭐ Every 50 XP levels you up and pays a coin bonus</li>
+          <li>🎁 Send gifts from the chat — bigger gifts build affection faster</li>
+          <li>💞 Grow from Just Met to Crush, Dating, In Love... Soulmate</li>
+          <li>🪙 Premium messages (-5 coins) build affection 3x faster</li>
+          <li>💕 Customize her name, personality, and room theme</li>
         </ul>
       </div>
     </div>

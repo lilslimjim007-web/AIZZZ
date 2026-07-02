@@ -77,11 +77,11 @@ app.post('/api/auth/login', (req, res) => {
 // User profile endpoints
 app.get('/api/user/profile', verifyToken, (req, res) => {
   db.get(
-    'SELECT id, username, coins, level, experience FROM users WHERE id = ?',
+    'SELECT id, username, coins, level, experience, affection FROM users WHERE id = ?',
     [req.userId],
     (err, user) => {
       if (err) return res.status(500).json({ error: 'Database error' });
-      res.json(user);
+      res.json({ ...user, relationship: relationshipStatus(user?.affection || 0) });
     }
   );
 });
@@ -158,68 +158,116 @@ app.post('/api/chat', verifyToken, async (req, res) => {
   }
 });
 
+// Relationship tiers based on affection score
+function relationshipStatus(affection) {
+  if (affection >= 500) return 'Soulmate';
+  if (affection >= 250) return 'In Love';
+  if (affection >= 100) return 'Dating';
+  if (affection >= 25) return 'Crush';
+  return 'Just Met';
+}
+
+// Award XP + affection, recompute level (1 level per 50 XP) and pay level-up bonus coins
+function awardProgress(userId, xpGain, affectionGain, cb) {
+  db.get('SELECT coins, level, experience, affection FROM users WHERE id = ?', [userId], (err, u) => {
+    if (err || !u) return cb(err || new Error('User not found'), null);
+
+    const newXp = u.experience + xpGain;
+    const newAffection = (u.affection || 0) + affectionGain;
+    const newLevel = Math.floor(newXp / 50) + 1;
+    const leveledUp = newLevel > u.level;
+    const bonus = leveledUp ? (newLevel - u.level) * 25 : 0;
+
+    db.run(
+      'UPDATE users SET experience = ?, affection = ?, level = ?, coins = coins + ? WHERE id = ?',
+      [newXp, newAffection, newLevel, bonus, userId],
+      (err2) => {
+        if (err2) return cb(err2, null);
+        if (bonus > 0) {
+          db.run(
+            'INSERT INTO coin_transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
+            [userId, bonus, 'reward', `Level ${newLevel} bonus`]
+          );
+        }
+        db.get('SELECT coins, level, experience, affection FROM users WHERE id = ?', [userId], (err3, row) => {
+          cb(err3, row ? { ...row, leveledUp, bonus } : null);
+        });
+      }
+    );
+  });
+}
+
 async function processChatMessage(userId, message, coinsCost, res) {
   try {
     // Get personality
     db.get(
       'SELECT personality, name FROM personalities WHERE user_id = ? LIMIT 1',
       [userId],
-      async (err, personality) => {
+      (err, personality) => {
         const gfName = personality?.name || 'Luna';
         const gfPersonality = personality?.personality || 'warm and caring';
 
-        const systemPrompt = `You are ${gfName}, an AI girlfriend character. You are ${gfPersonality}.
-Keep responses natural, engaging, and personal. Show genuine interest in the user's life.
+        // Pull recent conversation so she remembers context
+        db.all(
+          'SELECT message, response FROM chat_history WHERE user_id = ? ORDER BY id DESC LIMIT 8',
+          [userId],
+          async (histErr, rows) => {
+            const history = [];
+            (rows || []).reverse().forEach((r) => {
+              history.push({ role: 'user', content: r.message });
+              history.push({ role: 'assistant', content: r.response });
+            });
+            history.push({ role: 'user', content: message });
+
+            db.get('SELECT affection FROM users WHERE id = ?', [userId], async (affErr, userRow) => {
+              const status = relationshipStatus(userRow?.affection || 0);
+              const systemPrompt = `You are ${gfName}, an AI girlfriend character. You are ${gfPersonality}.
+Your current relationship status with the user is: ${status}. Act accordingly - warmer and more affectionate the deeper the relationship.
+Keep responses natural, engaging, and personal. Show genuine interest in the user's life. Remember details from the conversation.
 Be flirty but respectful. Responses should be 1-3 sentences usually.`;
 
-        try {
-          const response = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 200,
-            system: systemPrompt,
-            messages: [
-              { role: 'user', content: message },
-            ],
-          });
-
-          const aiResponse = response.content[0].type === 'text' ? response.content[0].text : 'I didn\'t understand that.';
-
-          // Save to chat history
-          db.run(
-            'INSERT INTO chat_history (user_id, message, response, coins_spent) VALUES (?, ?, ?, ?)',
-            [userId, message, aiResponse, coinsCost],
-            () => {
-              // Deduct coins if premium
-              if (coinsCost > 0) {
-                db.run(
-                  'UPDATE users SET coins = coins - ? WHERE id = ?',
-                  [coinsCost, userId]
-                );
+              let aiResponse;
+              try {
+                const response = await anthropic.messages.create({
+                  model: 'claude-3-5-sonnet-20241022',
+                  max_tokens: 200,
+                  system: systemPrompt,
+                  messages: history,
+                });
+                aiResponse = response.content[0].type === 'text' ? response.content[0].text : "I didn't understand that.";
+              } catch (error) {
+                console.error('Claude API error:', error);
+                aiResponse = `I'd love to chat, but I'm having trouble connecting. Try again in a moment! 💭`;
               }
 
-              // Award experience and potentially level up
+              // Save to chat history
               db.run(
-                'UPDATE users SET experience = experience + 1 WHERE id = ?',
-                [userId],
+                'INSERT INTO chat_history (user_id, message, response, coins_spent) VALUES (?, ?, ?, ?)',
+                [userId, message, aiResponse, coinsCost],
                 () => {
-                  db.get('SELECT coins, level, experience FROM users WHERE id = ?', [userId], (err, user) => {
+                  // Deduct coins if premium
+                  if (coinsCost > 0) {
+                    db.run('UPDATE users SET coins = coins - ? WHERE id = ?', [coinsCost, userId]);
+                  }
+
+                  // +1 XP and +1 affection per message; premium chats build affection faster
+                  awardProgress(userId, 1, coinsCost > 0 ? 3 : 1, (progErr, progress) => {
                     res.json({
                       response: aiResponse,
-                      coins: user?.coins || 0,
-                      level: user?.level || 1,
-                      experience: user?.experience || 0,
+                      coins: progress?.coins || 0,
+                      level: progress?.level || 1,
+                      experience: progress?.experience || 0,
+                      affection: progress?.affection || 0,
+                      relationship: relationshipStatus(progress?.affection || 0),
+                      levelUp: progress?.leveledUp || false,
+                      bonus: progress?.bonus || 0,
                     });
                   });
                 }
               );
-            }
-          );
-        } catch (error) {
-          console.error('Claude API error:', error);
-          // Fallback response if API fails
-          const fallbackResponse = `I'd love to chat, but I'm having trouble connecting. Try again in a moment! 💭`;
-          res.json({ response: fallbackResponse, coins: 0, level: 1 });
-        }
+            });
+          }
+        );
       }
     );
   } catch (error) {
@@ -292,7 +340,7 @@ app.post('/api/gifts/buy', verifyToken, (req, res) => {
       return res.status(400).json({ error: 'Not enough coins! 🪙' });
     }
 
-    db.run('UPDATE users SET coins = coins - ?, experience = experience + 5 WHERE id = ?', [gift.price, req.userId], () => {
+    db.run('UPDATE users SET coins = coins - ? WHERE id = ?', [gift.price, req.userId], () => {
       db.run(
         'INSERT INTO coin_transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
         [req.userId, -gift.price, 'gift', `Gift: ${gift.name}`]
@@ -301,8 +349,18 @@ app.post('/api/gifts/buy', verifyToken, (req, res) => {
         'INSERT INTO chat_history (user_id, message, response, coins_spent) VALUES (?, ?, ?, ?)',
         [req.userId, `🎁 Sent a ${gift.name} ${gift.emoji}`, gift.reaction, gift.price],
         () => {
-          db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (err2, row) => {
-            res.json({ coins: row?.coins || 0, reaction: gift.reaction, gift: { id: gift.id, name: gift.name, emoji: gift.emoji, price: gift.price } });
+          // Gifts give +5 XP and affection scaled to their price
+          const affectionGain = Math.max(2, Math.round(gift.price / 10));
+          awardProgress(req.userId, 5, affectionGain, (progErr, progress) => {
+            res.json({
+              coins: progress?.coins || 0,
+              reaction: gift.reaction,
+              gift: { id: gift.id, name: gift.name, emoji: gift.emoji, price: gift.price },
+              affection: progress?.affection || 0,
+              relationship: relationshipStatus(progress?.affection || 0),
+              levelUp: progress?.leveledUp || false,
+              bonus: progress?.bonus || 0,
+            });
           });
         }
       );

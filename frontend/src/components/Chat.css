@@ -41,6 +41,98 @@
   box-shadow: 0 0 12px rgba(255, 190, 0, 0.35);
 }
 
+/* ============ AFFECTION / RELATIONSHIP METER ============ */
+.affection-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 1.25rem;
+  background: rgba(10, 2, 18, 0.8);
+  border-bottom: 1px solid rgba(255, 45, 149, 0.25);
+  z-index: 5;
+  font-size: 0.8rem;
+  color: #ffb8dd;
+}
+
+.affection-status {
+  font-weight: bold;
+  white-space: nowrap;
+  text-shadow: 0 0 10px rgba(255, 45, 149, 0.7);
+}
+
+.affection-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.affection-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2d95, #ff6bb5, #ff2d95);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.9);
+  transition: width 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.affection-next {
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+/* ============ LEVEL UP CELEBRATION ============ */
+.levelup-burst {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  animation: levelup-pop 3.2s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+@keyframes levelup-pop {
+  0% { transform: translateX(-50%) scale(0.2); opacity: 0; }
+  12% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+  20% { transform: translateX(-50%) scale(1); }
+  80% { transform: translateX(-50%) scale(1); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-50px) scale(0.85); opacity: 0; }
+}
+
+.levelup-star {
+  font-size: 4rem;
+  animation: star-spin 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 24px rgba(255, 215, 0, 0.95));
+}
+
+@keyframes star-spin {
+  0%, 100% { transform: rotate(-12deg) scale(1); }
+  50% { transform: rotate(12deg) scale(1.15); }
+}
+
+.levelup-text {
+  font-size: 1.9rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffd76b;
+  text-shadow: 0 0 22px rgba(255, 190, 0, 0.95), 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.levelup-bonus {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(90deg, rgba(255, 160, 0, 0.9), rgba(255, 90, 0, 0.9));
+  padding: 0.35rem 1.1rem;
+  border-radius: 20px;
+  margin-top: 0.4rem;
+  box-shadow: 0 0 18px rgba(255, 150, 0, 0.7);
+}
+
 /* The 3D room viewport - messages float inside the room */
 .room-viewport {
   position: relative;

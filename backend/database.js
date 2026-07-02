@@ -20,6 +20,9 @@ db.serialize(() => {
     )
   `);
 
+  // Migration: affection column for the relationship system (ignore if exists)
+  db.run('ALTER TABLE users ADD COLUMN affection INTEGER DEFAULT 0', () => {});
+
   // Chat history table
   db.run(`
     CREATE TABLE IF NOT EXISTS chat_history (

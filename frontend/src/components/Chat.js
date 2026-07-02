@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { chatAPI, userAPI, giftsAPI, personalityAPI } from '../api';
+import { tierFor } from '../relationship';
 import Room from './Room';
 import GiftAnimation from './GiftAnimation';
 import './Chat.css';
@@ -22,10 +23,12 @@ function Chat() {
   const [gifts, setGifts] = useState([]);
   const [showGifts, setShowGifts] = useState(false);
   const [playingGift, setPlayingGift] = useState(null);
+  const [affection, setAffection] = useState(0);
+  const [levelUp, setLevelUp] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    loadCoins();
+    loadProfile();
     loadChatHistory();
     loadGifts();
     personalityAPI.get().then((r) => setGfName(r.data.name || 'Luna')).catch(() => {});
@@ -43,12 +46,23 @@ function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const loadCoins = async () => {
+  const loadProfile = async () => {
     try {
-      const response = await userAPI.getBalance();
+      const response = await userAPI.getProfile();
       setCoins(response.data.coins);
+      setAffection(response.data.affection || 0);
     } catch (err) {
-      console.error('Failed to load coins:', err);
+      console.error('Failed to load profile:', err);
+    }
+  };
+
+  // Applies coins/affection/level-up data that every backend response now includes
+  const applyProgress = (data) => {
+    setCoins(data.coins);
+    if (data.affection !== undefined) setAffection(data.affection);
+    if (data.levelUp) {
+      setLevelUp({ bonus: data.bonus });
+      setTimeout(() => setLevelUp(null), 3200);
     }
   };
 
@@ -89,7 +103,7 @@ function Chat() {
     try {
       const response = await chatAPI.sendMessage(userMessage, useCoins);
       setMessages((prev) => [...prev, { type: 'ai', text: response.data.response }]);
-      setCoins(response.data.coins);
+      applyProgress(response.data);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to send message');
       setMessages((prev) => prev.slice(0, -1));
@@ -105,7 +119,7 @@ function Chat() {
 
     try {
       const response = await giftsAPI.buy(gift.id);
-      setCoins(response.data.coins);
+      applyProgress(response.data);
       setPlayingGift(response.data.gift);
 
       setMessages((prev) => [
@@ -119,11 +133,20 @@ function Chat() {
   };
 
   const insufficientCoins = useCoins && coins < 5;
+  const tier = tierFor(affection);
 
   return (
     <div className={`chat-container theme-${theme}`}>
       {playingGift && (
         <GiftAnimation gift={playingGift} onDone={() => setPlayingGift(null)} />
+      )}
+
+      {levelUp && (
+        <div className="levelup-burst">
+          <div className="levelup-star">⭐</div>
+          <div className="levelup-text">LEVEL UP!</div>
+          <div className="levelup-bonus">+{levelUp.bonus} 🪙</div>
+        </div>
       )}
 
       <div className="chat-header">
@@ -139,6 +162,21 @@ function Chat() {
           ))}
         </div>
         <div className="coin-badge">🪙 {coins}</div>
+      </div>
+
+      <div className="affection-bar" title={`Affection: ${affection}`}>
+        <span className="affection-status">
+          {tier.current.emoji} {tier.current.name}
+        </span>
+        <div className="affection-track">
+          <div
+            className="affection-fill"
+            style={{ width: `${tier.progress * 100}%` }}
+          />
+        </div>
+        <span className="affection-next">
+          {tier.next ? `${affection}/${tier.next.min} → ${tier.next.emoji}` : 'MAX 💞'}
+        </span>
       </div>
 
       <div className="room-viewport">

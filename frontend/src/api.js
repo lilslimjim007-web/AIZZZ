@@ -35,6 +35,12 @@ export const coinsAPI = {
   spendCoins: (amount, description) => api.post('/coins/spend', { amount, description }),
 };
 
+export const storeAPI = {
+  packages: () => api.get('/store/packages'),
+  purchase: (packageId) => api.post('/store/purchase', { packageId }),
+  verify: (sessionId) => api.post('/store/verify', { sessionId }),
+};
+
 export const giftsAPI = {
   list: () => api.get('/gifts'),
   buy: (giftId) => api.post('/gifts/buy', { giftId }),

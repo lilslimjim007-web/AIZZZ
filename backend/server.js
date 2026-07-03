@@ -368,6 +368,104 @@ app.post('/api/gifts/buy', verifyToken, (req, res) => {
   });
 });
 
+// ============ COIN STORE ============
+// Real payments activate automatically when STRIPE_SECRET_KEY is set in .env
+// (Stripe Checkout shows Apple Pay in Safari / Google Pay in Chrome out of the box).
+// Without a key the store runs in demo mode: purchases succeed instantly, no charge.
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey ? require('stripe')(stripeKey) : null;
+
+const COIN_PACKAGES = [
+  { id: 'starter', label: 'Starter Pack', coins: 100, bonus: 0, priceCents: 99, emoji: '🪙' },
+  { id: 'popular', label: 'Popular Pack', coins: 500, bonus: 50, priceCents: 499, emoji: '💰', tag: 'MOST POPULAR' },
+  { id: 'super', label: 'Super Pack', coins: 1000, bonus: 200, priceCents: 999, emoji: '💎' },
+  { id: 'vip', label: 'VIP Vault', coins: 2500, bonus: 800, priceCents: 1999, emoji: '👑', tag: 'BEST VALUE' },
+];
+
+app.get('/api/store/packages', verifyToken, (req, res) => {
+  res.json({ packages: COIN_PACKAGES, demoMode: !stripe });
+});
+
+function creditPackage(userId, pack, reference, cb) {
+  const total = pack.coins + pack.bonus;
+  db.run('UPDATE users SET coins = coins + ? WHERE id = ?', [total, userId], () => {
+    db.run(
+      'INSERT INTO coin_transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
+      [userId, total, 'purchase', `${pack.label} (${reference})`],
+      () => {
+        db.get('SELECT coins FROM users WHERE id = ?', [userId], (err, row) => cb(row?.coins || 0, total));
+      }
+    );
+  });
+}
+
+app.post('/api/store/purchase', verifyToken, async (req, res) => {
+  const pack = COIN_PACKAGES.find((p) => p.id === req.body.packageId);
+  if (!pack) return res.status(400).json({ error: 'Unknown package' });
+
+  if (!stripe) {
+    // Demo mode: instant success, clearly flagged so the UI can say so
+    return creditPackage(req.userId, pack, 'demo purchase', (coins, credited) => {
+      res.json({ demo: true, coins, credited });
+    });
+  }
+
+  try {
+    const origin = req.headers.origin || `http://localhost:${PORT}`;
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'], // Apple Pay / Google Pay appear automatically in Checkout
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          unit_amount: pack.priceCents,
+          product_data: { name: `AIZZZ ${pack.label} — ${pack.coins + pack.bonus} coins` },
+        },
+        quantity: 1,
+      }],
+      metadata: { userId: String(req.userId), packageId: pack.id },
+      success_url: `${origin}/?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/?purchase=cancelled`,
+    });
+    res.json({ checkoutUrl: session.url });
+  } catch (err) {
+    console.error('Stripe error:', err);
+    res.status(500).json({ error: 'Payment setup failed' });
+  }
+});
+
+// Called by the frontend after Stripe redirects back with a session_id
+app.post('/api/store/verify', verifyToken, async (req, res) => {
+  if (!stripe) return res.status(400).json({ error: 'Payments not configured' });
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.body.sessionId);
+    if (session.payment_status !== 'paid' || session.metadata.userId !== String(req.userId)) {
+      return res.status(400).json({ error: 'Payment not completed' });
+    }
+
+    // Idempotency: never credit the same Stripe session twice
+    const ref = `stripe:${session.id}`;
+    db.get(
+      "SELECT id FROM coin_transactions WHERE user_id = ? AND type = 'purchase' AND description LIKE ?",
+      [req.userId, `%${ref}%`],
+      (err, existing) => {
+        if (existing) {
+          return db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (e, row) => {
+            res.json({ coins: row?.coins || 0, credited: 0, alreadyCredited: true });
+          });
+        }
+        const pack = COIN_PACKAGES.find((p) => p.id === session.metadata.packageId);
+        if (!pack) return res.status(400).json({ error: 'Unknown package' });
+        creditPackage(req.userId, pack, ref, (coins, credited) => res.json({ coins, credited }));
+      }
+    );
+  } catch (err) {
+    console.error('Stripe verify error:', err);
+    res.status(500).json({ error: 'Verification failed' });
+  }
+});
+
 // Serve frontend static files and catch-all for SPA
 const frontendBuildPath = path.join(__dirname, '../frontend/build');
 app.use(express.static(frontendBuildPath));

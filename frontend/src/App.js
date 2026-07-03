@@ -3,10 +3,14 @@ import './App.css';
 import Login from './components/Login';
 import Chat from './components/Chat';
 import Profile from './components/Profile';
+import Store from './components/Store';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [view, setView] = useState('chat');
+  // Land on the store when returning from a Stripe Checkout redirect
+  const [view, setView] = useState(
+    window.location.search.includes('purchase=') ? 'store' : 'chat'
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,6 +42,12 @@ function App() {
             💬 Chat
           </button>
           <button
+            className={`nav-btn ${view === 'store' ? 'active' : ''}`}
+            onClick={() => setView('store')}
+          >
+            🪙 Store
+          </button>
+          <button
             className={`nav-btn ${view === 'profile' ? 'active' : ''}`}
             onClick={() => setView('profile')}
           >
@@ -51,6 +61,7 @@ function App() {
 
       <main className="app-main">
         {view === 'chat' && <Chat />}
+        {view === 'store' && <Store />}
         {view === 'profile' && <Profile />}
       </main>
     </div>

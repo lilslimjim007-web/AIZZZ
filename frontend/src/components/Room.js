@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import Girl from './Girl';
 import './Room.css';
 
 const PARTICLES = {
@@ -7,7 +8,17 @@ const PARTICLES = {
   space: ['💫', '⭐', '🪐', '✨'],
 };
 
-function Room({ theme, gfName }) {
+function Room({ theme, gfName, kissKey }) {
+  const [kissing, setKissing] = useState(false);
+
+  // Chat bumps kissKey whenever she replies or receives a gift
+  useEffect(() => {
+    if (!kissKey) return;
+    setKissing(true);
+    const t = setTimeout(() => setKissing(false), 1600);
+    return () => clearTimeout(t);
+  }, [kissKey]);
+
   // Stable random positions per theme so particles don't jump on re-render
   const particles = useMemo(
     () =>
@@ -65,8 +76,8 @@ function Room({ theme, gfName }) {
         </span>
       ))}
 
-      <div className="room-avatar">
-        <div className="room-avatar-orb">😘</div>
+      <div className={`room-avatar ${kissing ? 'kiss' : ''}`}>
+        <Girl kissing={kissing} />
         <div className="room-avatar-name">{gfName}</div>
       </div>
     </div>

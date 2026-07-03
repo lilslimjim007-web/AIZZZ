@@ -58,31 +58,72 @@
   50% { opacity: 0.85; }
 }
 
-/* Luna's glowing presence in the room */
+/* Her animated presence in the room */
 .room-avatar {
   position: absolute;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.15rem;
   animation: avatar-hover 3.4s ease-in-out infinite;
   z-index: 1;
 }
 
-.room-avatar-orb {
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.6rem;
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.35), rgba(255, 105, 180, 0.25));
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 0 30px var(--room-accent, #ff69b4), inset 0 0 20px rgba(255, 255, 255, 0.25);
+.girl {
+  width: 138px;
+  height: auto;
+  filter: drop-shadow(0 0 22px var(--room-accent, rgba(255, 45, 149, 0.75)));
+}
+
+.girl .eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: girl-blink 4.4s infinite;
+}
+
+.girl .eye-r {
+  animation-delay: 0.05s;
+}
+
+@keyframes girl-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  93% { transform: scaleY(0.06); }
+  96% { transform: scaleY(1); }
+}
+
+.girl .hair-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 12%;
+  animation: girl-sway 4.8s ease-in-out infinite;
+}
+
+@keyframes girl-sway {
+  0%, 100% { transform: rotate(-1.2deg); }
+  50% { transform: rotate(1.2deg); }
+}
+
+.girl .kiss-heart {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.girl.kiss .kiss-heart {
+  animation: girl-kiss-pop 1.5s ease-out;
+}
+
+@keyframes girl-kiss-pop {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(30px, -40px) scale(1.6); }
+}
+
+.girl.kiss .eye-r {
+  animation: none;
+  transform: scaleY(0.12);
 }
 
 .room-avatar-name {
@@ -115,7 +156,11 @@
 }
 
 /* ============ THEME: HOT PINK BEDROOM ============ */
-.room-pink { --room-accent: #ff2d95; }
+.room-pink {
+  --room-accent: #ff2d95;
+  --hair-1: #ff8fc7; --hair-2: #cf217e;
+  --dress-1: #ff2d95; --dress-2: #5b0c44;
+}
 
 .room-pink .room-back {
   background:
@@ -136,7 +181,11 @@
 .room-pink .room-glow { background: radial-gradient(circle, #ff8ac9 0%, transparent 70%); }
 
 /* ============ THEME: RED ROOM ============ */
-.room-red { --room-accent: #ff1e1e; }
+.room-red {
+  --room-accent: #ff1e1e;
+  --hair-1: #e84560; --hair-2: #701025;
+  --dress-1: #c41230; --dress-2: #3d0410;
+}
 
 .room-red .room-back {
   background:
@@ -157,7 +206,11 @@
 .room-red .room-glow { background: radial-gradient(circle, #ff4545 0%, transparent 70%); }
 
 /* ============ THEME: NEON SPACE ============ */
-.room-space { --room-accent: #b465ff; }
+.room-space {
+  --room-accent: #b465ff;
+  --hair-1: #c08bff; --hair-2: #5b2aa8;
+  --dress-1: #7a3cff; --dress-2: #241058;
+}
 
 .room-space .room-back {
   background:

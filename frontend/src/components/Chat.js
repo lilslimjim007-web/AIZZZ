@@ -25,6 +25,7 @@ function Chat() {
   const [playingGift, setPlayingGift] = useState(null);
   const [affection, setAffection] = useState(0);
   const [levelUp, setLevelUp] = useState(null);
+  const [kissKey, setKissKey] = useState(0);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ function Chat() {
       setLevelUp({ bonus: data.bonus });
       setTimeout(() => setLevelUp(null), 3200);
     }
+    setKissKey((k) => k + 1); // she blows a kiss on every reply/gift
   };
 
   const loadGifts = async () => {
@@ -180,7 +182,7 @@ function Chat() {
       </div>
 
       <div className="room-viewport">
-        <Room theme={theme} gfName={gfName} />
+        <Room theme={theme} gfName={gfName} kissKey={kissKey} />
 
         <div className="messages-container">
           {messages.length === 0 && (

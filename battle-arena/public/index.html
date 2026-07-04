@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🥊 Battle Arena — Check In & Fight</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥊</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <!-- floating background gloves -->
+  <div class="bg-gloves" aria-hidden="true">
+    <span class="bg-glove g1">🥊</span>
+    <span class="bg-glove g2">🥊</span>
+    <span class="bg-glove g3">🥊</span>
+    <span class="bg-glove g4">🥊</span>
+    <span class="bg-glove g5">🥊</span>
+  </div>
+
+  <!-- ============ SIGN-IN SCREEN ============ -->
+  <section id="screen-login" class="screen">
+    <div class="login-card">
+      <div class="logo-gloves">
+        <span class="glove-left">🥊</span>
+        <span class="glove-right">🥊</span>
+      </div>
+      <h1 class="title">BATTLE ARENA</h1>
+      <p class="tagline">Check in. Ready up. Fight.</p>
+
+      <div id="google-btn-slot"></div>
+      <button id="btn-google-demo" class="btn btn-provider hidden">
+        <span class="provider-icon">G</span> Sign in with Google
+      </button>
+      <button id="btn-apple" class="btn btn-provider btn-apple">
+         Sign in with Apple
+      </button>
+
+      <div class="divider"><span>or</span></div>
+
+      <div class="quick-join">
+        <input id="guest-name" maxlength="20" placeholder="Enter your battle name" />
+        <button id="btn-guest" class="btn btn-primary">QUICK JOIN 🥊</button>
+      </div>
+      <p id="login-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- ============ USERNAME SCREEN ============ -->
+  <section id="screen-username" class="screen hidden">
+    <div class="login-card">
+      <h2>Pick your fighter name</h2>
+      <input id="username-input" maxlength="20" placeholder="e.g. IronFists22" />
+      <button id="btn-username" class="btn btn-primary">LOCK IT IN 🥊</button>
+      <p id="username-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- ============ MAIN ARENA ============ -->
+  <section id="screen-arena" class="screen hidden">
+    <header class="topbar">
+      <div class="topbar-title">🥊 BATTLE ARENA</div>
+      <div class="topbar-user">
+        <span id="me-name"></span>
+        <span id="me-record" class="record"></span>
+        <button id="btn-logout" class="btn btn-small">Sign out</button>
+      </div>
+    </header>
+
+    <div class="notif-stack" id="notif-stack"></div>
+
+    <main class="arena-grid">
+      <!-- MY STATUS -->
+      <div class="card card-status">
+        <h3>Today's Fight Card</h3>
+        <div id="status-area">
+          <button id="btn-checkin" class="btn btn-big btn-primary">
+            <span class="punch-glove">🥊</span> CHECK IN TO BATTLE
+          </button>
+          <button id="btn-ready" class="btn btn-big btn-ready hidden">
+            <span class="punch-glove">🥊</span> READY UP
+          </button>
+          <button id="btn-unready" class="btn btn-big btn-secondary hidden">
+            STAND DOWN
+          </button>
+          <div id="queue-status" class="queue-status hidden">
+            <div class="pulse-ring"></div>
+            <p>You're in the queue — waiting for <b id="queue-need"></b> more fighter(s)…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY MATCH -->
+      <div class="card card-match hidden" id="card-match">
+        <h3>Your Match</h3>
+        <div id="match-area"></div>
+      </div>
+
+      <!-- WHO'S HERE -->
+      <div class="card">
+        <h3>Checked In Today <span id="checkin-count" class="count-badge"></span></h3>
+        <ul id="checkin-list" class="fighter-list"></ul>
+      </div>
+
+      <!-- READY QUEUE -->
+      <div class="card">
+        <h3>Ready Queue <span id="queue-count" class="count-badge"></span></h3>
+        <div class="queue-slots" id="queue-slots"></div>
+      </div>
+
+      <!-- UPCOMING & LIVE MATCHES -->
+      <div class="card card-wide">
+        <h3>Matches & Brackets</h3>
+        <div id="matches-list"></div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div class="card">
+        <h3>🏆 Champions Board</h3>
+        <ol id="leaderboard" class="leaderboard"></ol>
+      </div>
+    </main>
+  </section>
+
+  <!-- VS overlay when a match goes live -->
+  <div id="vs-overlay" class="vs-overlay hidden">
+    <div class="vs-glove-l">🥊</div>
+    <div class="vs-text">VS</div>
+    <div class="vs-glove-r">🥊</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

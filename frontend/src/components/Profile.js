@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { userAPI, personalityAPI, coinsAPI } from '../api';
 import { tierFor } from '../relationship';
 import './Profile.css';
+import './PremiumModal.css';
 
-function Profile() {
+function Profile({ premium }) {
   const [profile, setProfile] = useState(null);
   const [personality, setPersonality] = useState(null);
   const [editName, setEditName] = useState('');
@@ -79,6 +80,12 @@ function Profile() {
     <div className="profile-container">
       <div className="profile-card">
         <h2>👤 Your Profile</h2>
+
+        {premium && (
+          <div className="profile-premium-row">
+            <span className="premium-badge">💎 PREMIUM MEMBER</span>
+          </div>
+        )}
 
         <div className="profile-stats">
           <div className="stat">

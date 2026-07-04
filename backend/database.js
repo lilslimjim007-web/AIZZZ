@@ -49,6 +49,10 @@ db.serialize(() => {
     )
   `);
 
+  // Premium subscription columns (ignore error if they already exist)
+  db.run(`ALTER TABLE users ADD COLUMN premium INTEGER DEFAULT 0`, () => {});
+  db.run(`ALTER TABLE users ADD COLUMN premium_expires DATETIME`, () => {});
+
   // AI personality table (for customizing the GF)
   db.run(`
     CREATE TABLE IF NOT EXISTS personalities (

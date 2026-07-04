@@ -29,6 +29,12 @@
   text-shadow: 0 0 14px rgba(255, 45, 149, 0.6);
 }
 
+.profile-premium-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
 .profile-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;

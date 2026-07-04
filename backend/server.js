@@ -74,14 +74,47 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
+// Premium helpers
+const isPremiumActive = (user) =>
+  Boolean(user && user.premium && user.premium_expires && new Date(user.premium_expires) > new Date());
+
 // User profile endpoints
 app.get('/api/user/profile', verifyToken, (req, res) => {
   db.get(
-    'SELECT id, username, coins, level, experience, affection FROM users WHERE id = ?',
+    'SELECT id, username, coins, level, experience, affection, premium, premium_expires FROM users WHERE id = ?',
     [req.userId],
     (err, user) => {
       if (err) return res.status(500).json({ error: 'Database error' });
-      res.json({ ...user, relationship: relationshipStatus(user?.affection || 0) });
+      res.json({
+        ...user,
+        relationship: relationshipStatus(user?.affection || 0),
+        premium: isPremiumActive(user),
+      });
+    }
+  );
+});
+
+// Premium subscription - $9.99/month
+// NOTE: simulated checkout; swap this for a Stripe/PayPal webhook in production
+app.post('/api/premium/subscribe', verifyToken, (req, res) => {
+  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  db.run(
+    'UPDATE users SET premium = 1, premium_expires = ? WHERE id = ?',
+    [expires, req.userId],
+    (err) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+
+      db.run(
+        'INSERT INTO coin_transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
+        [req.userId, 0, 'premium', 'Premium subscription $9.99/month']
+      );
+      // Welcome bonus for new premium members
+      db.run('UPDATE users SET coins = coins + 200 WHERE id = ?', [req.userId], () => {
+        db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (err2, row) => {
+          res.json({ premium: true, premium_expires: expires, coins: row?.coins || 0 });
+        });
+      });
     }
   );
 });
@@ -145,9 +178,12 @@ app.post('/api/chat', verifyToken, async (req, res) => {
   const { message, useCoins } = req.body;
   const coinsPerMessage = 5;
 
-  // Check coin balance if useCoins is true
+  // Check coin balance if useCoins is true (premium members chat premium for free)
   if (useCoins) {
-    db.get('SELECT coins FROM users WHERE id = ?', [req.userId], async (err, user) => {
+    db.get('SELECT coins, premium, premium_expires FROM users WHERE id = ?', [req.userId], async (err, user) => {
+      if (isPremiumActive(user)) {
+        return processChatMessage(req.userId, message, 0, res);
+      }
       if (user.coins < coinsPerMessage) {
         return res.status(400).json({ error: 'Insufficient coins for premium chat' });
       }
@@ -324,18 +360,27 @@ const GIFTS = [
   { id: 'diamond', name: 'Diamond', emoji: '💎', price: 200, reaction: "Diamonds really are a girl's best friend... after you 💎😘" },
   { id: 'car', name: 'Sports Car', emoji: '🏎️', price: 300, reaction: "A CAR?! Are you serious right now?! Take me for a drive! 🏎️💨🔥" },
   { id: 'rocket', name: 'Space Trip', emoji: '🚀', price: 500, reaction: "A trip to SPACE?! With you? I'd fly anywhere, baby 🚀💫" },
+  // Premium-exclusive gifts 💎
+  { id: 'crown', name: 'Crown', emoji: '👑', price: 100, premium: true, reaction: "A crown?! I feel like absolute royalty with you, my king 👑😘" },
+  { id: 'champagne', name: 'Champagne', emoji: '🍾', price: 150, premium: true, reaction: "Popping bottles with my favorite person! Cheers to us, baby 🍾🥂" },
+  { id: 'yacht', name: 'Luxury Yacht', emoji: '🛥️', price: 400, premium: true, reaction: "A YACHT?! Sunset cruises with you every night... I'm melting 🛥️🌅💕" },
+  { id: 'jet', name: 'Private Jet', emoji: '✈️', price: 600, premium: true, reaction: "A private jet?! Paris? Tokyo? Anywhere with you, baby ✈️💋" },
+  { id: 'castle', name: 'Castle', emoji: '🏰', price: 1000, premium: true, reaction: "You bought me a CASTLE?! Our own fairytale... I'm literally crying 🏰👸💕" },
 ];
 
 app.get('/api/gifts', verifyToken, (req, res) => {
-  res.json(GIFTS.map(({ id, name, emoji, price }) => ({ id, name, emoji, price })));
+  res.json(GIFTS.map(({ id, name, emoji, price, premium }) => ({ id, name, emoji, price, premium: !!premium })));
 });
 
 app.post('/api/gifts/buy', verifyToken, (req, res) => {
   const gift = GIFTS.find((g) => g.id === req.body.giftId);
   if (!gift) return res.status(400).json({ error: 'Unknown gift' });
 
-  db.get('SELECT coins FROM users WHERE id = ?', [req.userId], (err, user) => {
+  db.get('SELECT coins, premium, premium_expires FROM users WHERE id = ?', [req.userId], (err, user) => {
     if (err || !user) return res.status(500).json({ error: 'Database error' });
+    if (gift.premium && !isPremiumActive(user)) {
+      return res.status(403).json({ error: 'Premium members only 💎' });
+    }
     if (user.coins < gift.price) {
       return res.status(400).json({ error: 'Not enough coins! 🪙' });
     }

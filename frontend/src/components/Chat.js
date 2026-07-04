@@ -11,7 +11,7 @@ const THEMES = [
   { id: 'space', label: 'Neon Space' },
 ];
 
-function Chat() {
+function Chat({ premium, onOpenPremium }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,6 +38,11 @@ function Chat() {
   useEffect(() => {
     localStorage.setItem('roomTheme', theme);
   }, [theme]);
+
+  // Refresh coins when premium status changes (welcome bonus)
+  useEffect(() => {
+    loadProfile();
+  }, [premium]);
 
   useEffect(() => {
     scrollToBottom();
@@ -115,6 +120,11 @@ function Chat() {
   };
 
   const handleBuyGift = async (gift) => {
+    if (gift.premium && !premium) {
+      setShowGifts(false);
+      onOpenPremium();
+      return;
+    }
     if (coins < gift.price || playingGift) return;
     setError('');
     setShowGifts(false);
@@ -134,7 +144,7 @@ function Chat() {
     }
   };
 
-  const insufficientCoins = useCoins && coins < 5;
+  const insufficientCoins = useCoins && coins < 5 && !premium;
   const tier = tierFor(affection);
 
   return (
@@ -205,18 +215,24 @@ function Chat() {
 
       {showGifts && (
         <div className="gift-drawer">
-          {gifts.map((gift) => (
-            <button
-              key={gift.id}
-              className={`gift-card ${coins < gift.price ? 'locked' : ''}`}
-              onClick={() => handleBuyGift(gift)}
-              disabled={coins < gift.price}
-            >
-              <span className="gift-card-emoji">{gift.emoji}</span>
-              <span className="gift-card-name">{gift.name}</span>
-              <span className="gift-card-price">🪙 {gift.price}</span>
-            </button>
-          ))}
+          {gifts.map((gift) => {
+            const premiumLocked = gift.premium && !premium;
+            const cantAfford = !premiumLocked && coins < gift.price;
+            return (
+              <button
+                key={gift.id}
+                className={`gift-card ${cantAfford ? 'locked' : ''} ${gift.premium ? 'premium-gift' : ''} ${premiumLocked ? 'premium-locked' : ''}`}
+                onClick={() => handleBuyGift(gift)}
+                disabled={cantAfford}
+                title={premiumLocked ? 'Premium members only - tap to upgrade' : gift.name}
+              >
+                {gift.premium && <span className="gift-card-tag">{premiumLocked ? '🔒 💎' : '💎'}</span>}
+                <span className="gift-card-emoji">{gift.emoji}</span>
+                <span className="gift-card-name">{gift.name}</span>
+                <span className="gift-card-price">🪙 {gift.price}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -256,9 +272,9 @@ function Chat() {
                 onChange={(e) => setUseCoins(e.target.checked)}
                 disabled={loading}
               />
-              <span>Premium (-5 🪙)</span>
+              <span>{premium ? 'Premium chat (FREE 💎)' : 'Premium (-5 🪙)'}</span>
             </label>
-            {insufficientCoins && (
+            {insufficientCoins && !premium && (
               <span className="warning">Not enough coins</span>
             )}
           </div>

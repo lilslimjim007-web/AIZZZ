@@ -41,6 +41,10 @@ export const storeAPI = {
   verify: (sessionId) => api.post('/store/verify', { sessionId }),
 };
 
+export const premiumAPI = {
+  subscribe: () => api.post('/premium/subscribe'),
+};
+
 export const giftsAPI = {
   list: () => api.get('/gifts'),
   buy: (giftId) => api.post('/gifts/buy', { giftId }),

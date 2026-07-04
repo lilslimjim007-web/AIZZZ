@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import Login from './components/Login';
 import Chat from './components/Chat';
 import Profile from './components/Profile';
 import Store from './components/Store';
+import PremiumModal from './components/PremiumModal';
+import { userAPI } from './api';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -11,15 +13,27 @@ function App() {
   const [view, setView] = useState(
     window.location.search.includes('purchase=') ? 'store' : 'chat'
   );
-  const [loading, setLoading] = useState(false);
+  const [premium, setPremium] = useState(false);
+  const [showPremium, setShowPremium] = useState(false);
+
+  const loadProfile = useCallback(async () => {
+    try {
+      const response = await userAPI.getProfile();
+      setPremium(Boolean(response.data.premium));
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    }
+  }, []);
 
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
+      loadProfile();
     } else {
       localStorage.removeItem('token');
+      setPremium(false);
     }
-  }, [token]);
+  }, [token, loadProfile]);
 
   const handleLogout = () => {
     setToken(null);
@@ -34,6 +48,13 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>✨ AIZZZ</h1>
+        {premium ? (
+          <span className="premium-badge">💎 PREMIUM</span>
+        ) : (
+          <button className="premium-btn" onClick={() => setShowPremium(true)}>
+            💎 Go Premium
+          </button>
+        )}
         <nav className="nav-tabs">
           <button
             className={`nav-btn ${view === 'chat' ? 'active' : ''}`}
@@ -60,10 +81,22 @@ function App() {
       </header>
 
       <main className="app-main">
-        {view === 'chat' && <Chat />}
+        {view === 'chat' && (
+          <Chat premium={premium} onOpenPremium={() => setShowPremium(true)} />
+        )}
         {view === 'store' && <Store />}
-        {view === 'profile' && <Profile />}
+        {view === 'profile' && <Profile premium={premium} />}
       </main>
+
+      {showPremium && (
+        <PremiumModal
+          onClose={() => setShowPremium(false)}
+          onSubscribed={() => {
+            setPremium(true);
+            setShowPremium(false);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -302,6 +302,34 @@
   color: #ffd76b;
 }
 
+/* Premium-exclusive gifts */
+.gift-card {
+  position: relative;
+}
+
+.gift-card.premium-gift {
+  background: linear-gradient(160deg, rgba(0, 229, 255, 0.16), rgba(180, 101, 255, 0.2));
+  border-color: rgba(0, 229, 255, 0.55);
+}
+
+.gift-card.premium-gift:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5);
+}
+
+.gift-card.premium-locked {
+  opacity: 0.75;
+  filter: none;
+  cursor: pointer;
+}
+
+.gift-card-tag {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.62rem;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.9));
+}
+
 /* ============ INPUT AREA ============ */
 .chat-input-form {
   border-top: 1px solid rgba(255, 45, 149, 0.3);

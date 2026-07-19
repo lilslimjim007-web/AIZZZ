@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2560" width="1600" height="2560">
+  <defs>
+    <!-- Sultry tropical night sky -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#0d0212"/>
+      <stop offset="30%" stop-color="#2a0724"/>
+      <stop offset="55%" stop-color="#5c0e2e"/>
+      <stop offset="75%" stop-color="#a91f33"/>
+      <stop offset="92%" stop-color="#e85c2b"/>
+      <stop offset="100%" stop-color="#f8933f"/>
+    </linearGradient>
+
+    <!-- Smoldering sun -->
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#ffe9b3"/>
+      <stop offset="45%" stop-color="#ffb45e"/>
+      <stop offset="80%" stop-color="#ff5c3d"/>
+      <stop offset="100%" stop-color="#ff3b5c" stop-opacity="0.55"/>
+    </radialGradient>
+    <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#ff7a45" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#ff3b5c" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ff3b5c" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Gold for type -->
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffedbd"/>
+      <stop offset="45%" stop-color="#eec06a"/>
+      <stop offset="100%" stop-color="#9c6a24"/>
+    </linearGradient>
+    <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#ffd98a"/>
+      <stop offset="40%" stop-color="#ff9d4d"/>
+      <stop offset="75%" stop-color="#ff3b5c"/>
+      <stop offset="100%" stop-color="#c1122f"/>
+    </linearGradient>
+
+    <!-- Silhouette: near-black plum -->
+    <linearGradient id="sil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c0410"/>
+      <stop offset="100%" stop-color="#0d0108"/>
+    </linearGradient>
+
+    <!-- Lips -->
+    <linearGradient id="lips" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff5d7a"/>
+      <stop offset="45%" stop-color="#e6153f"/>
+      <stop offset="100%" stop-color="#8f0722"/>
+    </linearGradient>
+    <radialGradient id="lipShine" cx="35%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Chili pepper -->
+    <linearGradient id="chili" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff5a3c"/>
+      <stop offset="55%" stop-color="#d61a2e"/>
+      <stop offset="100%" stop-color="#8f0722"/>
+    </linearGradient>
+
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="blurA"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1600" height="2560" fill="url(#sky)"/>
+
+  <!-- Sun halo + disc behind the figure -->
+  <circle cx="800" cy="1330" r="900" fill="url(#sunHalo)"/>
+  <circle cx="800" cy="1330" r="560" fill="url(#sun)" opacity="0.92"/>
+
+  <!-- Distant shimmer lines on the sun (heat haze) -->
+  <g stroke="#ffdca0" opacity="0.35" stroke-linecap="round">
+    <line x1="420" y1="1585" x2="1180" y2="1585" stroke-width="8"/>
+    <line x1="500" y1="1650" x2="1100" y2="1650" stroke-width="6"/>
+    <line x1="560" y1="1710" x2="1040" y2="1710" stroke-width="4"/>
+  </g>
+
+  <!-- Palm fronds, top corners -->
+  <g fill="#12030c" opacity="0.96">
+    <path d="M-40 60 C 260 90, 470 190, 610 380 C 430 330, 330 320, 210 350
+             C 330 390, 430 450, 500 560 C 340 500, 220 470, 90 480
+             C 190 540, 260 610, 300 720 C 170 630, 60 560, -40 530 Z"/>
+    <path d="M1640 40 C 1340 80, 1130 190, 990 390 C 1170 335, 1270 325, 1390 355
+             C 1270 395, 1170 455, 1100 565 C 1260 505, 1380 475, 1510 485
+             C 1410 545, 1340 615, 1300 725 C 1430 635, 1540 565, 1640 535 Z"/>
+  </g>
+  <!-- soft out-of-focus frond, adds depth -->
+  <path d="M-60 300 C 160 330, 320 420, 430 580 C 300 540, 200 530, 90 555
+           C 180 610, 250 680, 290 780 C 160 700, 50 640, -60 610 Z"
+        fill="#1c0512" opacity="0.7" filter="url(#blurA)"/>
+
+  <!-- ===== Centerpiece: sultry lips with a chili pepper ===== -->
+  <!-- chili pod (drawn first so the lips overlap its top) -->
+  <g filter="url(#soft)">
+    <path d="M716.9 1280.2 L715.9 1290.7 L715.1 1301.6 L714.5 1312.3 L714.1 1322.8 L713.8 1333.2 L713.7 1343.3 L713.7 1353.3 L713.9 1363.2 L714.2 1372.8 L714.5 1382.3 L714.9 1391.6 L715.4 1400.8 L715.9 1409.8 L716.4 1418.7 L717.0 1427.5 L717.5 1436.1 L718.1 1444.5 L718.6 1452.9 L719.1 1461.1 L719.5 1469.2 L719.8 1477.2 L720.1 1485.1 L720.2 1492.9 L720.3 1500.7 L720.3 1508.3 L720.1 1515.9 L719.8 1523.5 L719.3 1531.0 L718.6 1538.4 L717.8 1545.9 L716.8 1553.3 L715.5 1560.7 L714.0 1568.1 L712.3 1575.6 L710.3 1583.1 L708.0 1590.6 L705.5 1598.2 L702.6 1605.8 L699.3 1613.5 L695.7 1621.3 L691.7 1629.1 L687.4 1637.0 L682.6 1645.1 L677.4 1653.2 L671.7 1661.4 L665.6 1669.7 L659.1 1678.2 L652.3 1687.0 L657.7 1693.0 L667.3 1686.8 L676.2 1680.3 L684.7 1673.6 L692.8 1666.8 L700.5 1659.9 L707.7 1652.8 L714.6 1645.6 L721.2 1638.4 L727.4 1631.0 L733.3 1623.5 L738.8 1615.9 L744.0 1608.2 L748.9 1600.3 L753.5 1592.4 L757.8 1584.4 L761.8 1576.3 L765.6 1568.2 L769.1 1559.9 L772.3 1551.6 L775.4 1543.3 L778.2 1534.8 L780.8 1526.4 L783.2 1517.9 L785.4 1509.3 L787.5 1500.8 L789.5 1492.2 L791.3 1483.5 L793.0 1474.9 L794.6 1466.3 L796.2 1457.6 L797.7 1448.9 L799.1 1440.2 L800.5 1431.5 L801.9 1422.8 L803.3 1414.1 L804.7 1405.4 L806.1 1396.7 L807.6 1388.0 L809.1 1379.3 L810.7 1370.5 L812.3 1361.8 L814.1 1353.1 L815.9 1344.3 L817.9 1335.6 L820.0 1326.8 L822.2 1318.0 L824.5 1309.2 L827.1 1299.8 Z" fill="url(#chili)"/>
+    <path d="M739 1337 L737 1359 L735 1382 L734 1403 L733 1424 L732 1445 L731 1465 L729 1485 L727 1505" fill="none" stroke="#ffb3a0" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- lips (brand mark, scaled up) -->
+  <g transform="translate(800 1150) scale(2.2) translate(-800 -322)" filter="url(#glow)">
+    <path d="M652 306
+             C 688 252, 738 240, 782 270
+             C 790 276, 810 276, 818 270
+             C 862 240, 912 252, 948 306
+             C 900 316, 850 320, 800 320
+             C 750 320, 700 316, 652 306 Z"
+          fill="url(#lips)"/>
+    <path d="M652 306
+             C 700 318, 750 322, 800 322
+             C 850 322, 900 318, 948 306
+             C 918 372, 862 404, 800 404
+             C 738 404, 682 372, 652 306 Z"
+          fill="url(#lips)"/>
+    <path d="M660 307 C 760 325, 840 325, 940 307"
+          fill="none" stroke="#5c0316" stroke-width="7" stroke-linecap="round"/>
+    <path d="M652 306
+             C 688 252, 738 240, 782 270
+             C 790 276, 810 276, 818 270
+             C 862 240, 912 252, 948 306
+             C 900 316, 850 320, 800 320
+             C 750 320, 700 316, 652 306 Z"
+          fill="url(#lipShine)"/>
+  </g>
+
+  <!-- Ember sparks drifting -->
+  <g fill="#ffca7a" filter="url(#soft)">
+    <circle cx="470" cy="1180" r="6" opacity="0.8"/>
+    <circle cx="1150" cy="1040" r="5" opacity="0.7"/>
+    <circle cx="1230" cy="1330" r="7" opacity="0.75"/>
+    <circle cx="380" cy="1420" r="5" opacity="0.65"/>
+    <circle cx="1090" cy="1560" r="4" opacity="0.6"/>
+    <circle cx="520" cy="920" r="4" opacity="0.6"/>
+  </g>
+
+  <!-- ===== Type ===== -->
+  <!-- Imprint header -->
+  <text x="800" y="170" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="40" letter-spacing="14" fill="url(#gold)" filter="url(#soft)">T-MUST PRODUCTIONS</text>
+  <text x="800" y="232" text-anchor="middle"
+        font-family="Georgia, serif" font-size="28" letter-spacing="10"
+        fill="#e8a9b8" opacity="0.9">P R E S E N T S</text>
+
+  <!-- Title block, lower third -->
+  <text x="800" y="2185" text-anchor="middle"
+        font-family="Didot, 'Playfair Display', 'Bodoni MT', Georgia, 'Times New Roman', serif"
+        font-size="188" font-weight="700" letter-spacing="6"
+        fill="url(#fire)" filter="url(#glow)">FORBIDDEN</text>
+  <text x="800" y="2360" text-anchor="middle"
+        font-family="Didot, 'Playfair Display', 'Bodoni MT', Georgia, 'Times New Roman', serif"
+        font-size="222" font-weight="700" letter-spacing="30"
+        fill="url(#gold)" filter="url(#soft)">HEAT</text>
+
+  <!-- kicker above title -->
+  <line x1="470" y1="1985" x2="700" y2="1985" stroke="url(#gold)" stroke-width="2" opacity="0.9"/>
+  <line x1="900" y1="1985" x2="1130" y2="1985" stroke="url(#gold)" stroke-width="2" opacity="0.9"/>
+  <circle cx="800" cy="1985" r="6" fill="#eec06a"/>
+  <text x="800" y="2028" text-anchor="middle" opacity="0"
+        font-family="Georgia, serif" font-size="30">.</text>
+  <text x="800" y="1948" text-anchor="middle"
+        font-family="Georgia, serif" font-style="italic"
+        font-size="40" letter-spacing="4" fill="#ffd9c2">based on a true story</text>
+
+  <!-- Footer: author line + 18+ -->
+  <text x="800" y="2470" text-anchor="middle"
+        font-family="Georgia, serif" font-size="42" letter-spacing="12"
+        fill="#f2c9d4">A  SPICY  EXOTIC  ROMANCE</text>
+  <g filter="url(#soft)">
+    <circle cx="1450" cy="2440" r="52" fill="#0d0108" opacity="0.55"/>
+    <circle cx="1450" cy="2440" r="52" fill="none" stroke="url(#fire)" stroke-width="6"/>
+    <text x="1450" y="2458" text-anchor="middle"
+          font-family="Georgia, serif" font-size="48" font-weight="700" fill="url(#fire)">18+</text>
+  </g>
+</svg>

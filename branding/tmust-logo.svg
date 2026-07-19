@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <!-- Background: deep black into smoldering crimson -->
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#2b0710"/>
+      <stop offset="55%" stop-color="#160309"/>
+      <stop offset="100%" stop-color="#0a0104"/>
+    </radialGradient>
+
+    <!-- Hot metal gradient for the wordmark -->
+    <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#ffd98a"/>
+      <stop offset="35%" stop-color="#ff9d4d"/>
+      <stop offset="68%" stop-color="#ff3b5c"/>
+      <stop offset="100%" stop-color="#c1122f"/>
+    </linearGradient>
+
+    <!-- Gold for accents -->
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8a5a1e"/>
+      <stop offset="25%" stop-color="#e8b95f"/>
+      <stop offset="50%" stop-color="#ffe9b3"/>
+      <stop offset="75%" stop-color="#e8b95f"/>
+      <stop offset="100%" stop-color="#8a5a1e"/>
+    </linearGradient>
+
+    <!-- Lips -->
+    <linearGradient id="lips" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff5d7a"/>
+      <stop offset="45%" stop-color="#e6153f"/>
+      <stop offset="100%" stop-color="#8f0722"/>
+    </linearGradient>
+    <radialGradient id="lipShine" cx="35%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Flame -->
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#c1122f"/>
+      <stop offset="45%" stop-color="#ff6a3d"/>
+      <stop offset="100%" stop-color="#ffd98a"/>
+    </linearGradient>
+
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+
+  <!-- Smoky heat haze behind the mark -->
+  <ellipse cx="800" cy="470" rx="560" ry="330" fill="#ff2d55" opacity="0.07"/>
+  <ellipse cx="800" cy="470" rx="380" ry="240" fill="#ff6a3d" opacity="0.06"/>
+
+  <!-- Thin gold frame -->
+  <rect x="46" y="46" width="1508" height="908" fill="none" stroke="url(#gold)" stroke-width="3" opacity="0.9"/>
+  <rect x="60" y="60" width="1480" height="880" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+
+  <!-- ===== Kiss-mark lips with a flame rising ===== -->
+  <g filter="url(#glow)">
+    <!-- flame -->
+    <path d="M800 96
+             C 828 138, 852 160, 846 198
+             C 843 218, 828 232, 812 238
+             C 824 220, 822 204, 810 190
+             C 806 206, 796 214, 786 224
+             C 772 210, 766 192, 774 172
+             C 760 184, 752 202, 758 226
+             C 742 214, 732 196, 736 172
+             C 742 136, 776 128, 800 96 Z"
+          fill="url(#flame)" opacity="0.95"/>
+    <!-- upper lip -->
+    <path d="M652 306
+             C 688 252, 738 240, 782 270
+             C 790 276, 810 276, 818 270
+             C 862 240, 912 252, 948 306
+             C 900 316, 850 320, 800 320
+             C 750 320, 700 316, 652 306 Z"
+          fill="url(#lips)"/>
+    <!-- lower lip -->
+    <path d="M652 306
+             C 700 318, 750 322, 800 322
+             C 850 322, 900 318, 948 306
+             C 918 372, 862 404, 800 404
+             C 738 404, 682 372, 652 306 Z"
+          fill="url(#lips)"/>
+    <!-- mouth part line -->
+    <path d="M660 307 C 760 325, 840 325, 940 307"
+          fill="none" stroke="#5c0316" stroke-width="7" stroke-linecap="round"/>
+    <!-- shine -->
+    <path d="M652 306
+             C 688 252, 738 240, 782 270
+             C 790 276, 810 276, 818 270
+             C 862 240, 912 252, 948 306
+             C 900 316, 850 320, 800 320
+             C 750 320, 700 316, 652 306 Z"
+          fill="url(#lipShine)"/>
+  </g>
+
+  <!-- ===== Wordmark ===== -->
+  <text x="800" y="588" text-anchor="middle"
+        font-family="Didot, 'Playfair Display', 'Bodoni MT', Georgia, 'Times New Roman', serif"
+        font-size="172" font-weight="700" letter-spacing="10"
+        fill="url(#fire)" filter="url(#softGlow)">T-MUST</text>
+
+  <!-- gold rules flanking PRODUCTIONS -->
+  <line x1="300" y1="652" x2="440" y2="652" stroke="url(#gold)" stroke-width="2"/>
+  <line x1="1160" y1="652" x2="1300" y2="652" stroke="url(#gold)" stroke-width="2"/>
+  <circle cx="456" cy="652" r="4" fill="#e8b95f"/>
+  <circle cx="1144" cy="652" r="4" fill="#e8b95f"/>
+
+  <text x="800" y="666" text-anchor="middle"
+        font-family="Didot, 'Playfair Display', Georgia, 'Times New Roman', serif"
+        font-size="44" font-weight="400" letter-spacing="26"
+        fill="url(#gold)">PRODUCTIONS</text>
+
+  <!-- Tagline -->
+  <text x="800" y="760" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-style="italic"
+        font-size="34" letter-spacing="3"
+        fill="#f2b8c6">Spicy adult stories &#8212; based on truth, finished in fantasy.</text>
+
+  <!-- Bottom row: 18+ badge -->
+  <g filter="url(#softGlow)">
+    <circle cx="800" cy="856" r="46" fill="none" stroke="url(#fire)" stroke-width="5"/>
+    <text x="800" y="872" text-anchor="middle"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="42" font-weight="700" fill="url(#fire)">18+</text>
+  </g>
+  <text x="666" y="864" text-anchor="end"
+        font-family="Georgia, serif" font-size="22" letter-spacing="6" fill="#c9a25e">TRUE STORIES</text>
+  <text x="934" y="864" text-anchor="start"
+        font-family="Georgia, serif" font-size="22" letter-spacing="6" fill="#c9a25e">PURE FICTION</text>
+</svg>

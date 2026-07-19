@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kate Cook Cleaning ✨ A+ Super High Quality Cleaning</title>
+<meta name="description" content="Kate Cook Cleaning — A+ super high quality residential & Airbnb cleaning serving Albany, Rensselaer & Saratoga counties. Affordable pricing, 100% guaranteed work. Call (518) 445-5742!">
+<style>
+  :root{
+    --pink:#ff5fa2;
+    --hot-pink:#ff2d87;
+    --soft-pink:#ffd6e8;
+    --blush:#fff0f7;
+    --purple:#a855f7;
+    --lav:#e9d5ff;
+    --gold:#ffd700;
+    --ink:#5b2a4a;
+    --white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(160deg,#ffe3f1 0%,#f3e2ff 45%,#ffe9f5 100%);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ---------- floating sparkles background ---------- */
+  .sparkle-field{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .sparkle{
+    position:absolute;
+    font-size:16px;
+    opacity:0;
+    animation:floatSparkle linear infinite;
+  }
+  @keyframes floatSparkle{
+    0%{transform:translateY(105vh) scale(.4) rotate(0deg);opacity:0;}
+    10%{opacity:.9;}
+    90%{opacity:.7;}
+    100%{transform:translateY(-8vh) scale(1.1) rotate(360deg);opacity:0;}
+  }
+
+  /* ---------- app shell ---------- */
+  .app{
+    position:relative;z-index:1;
+    max-width:520px;margin:0 auto;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    box-shadow:0 0 60px rgba(255,95,162,.25);
+  }
+  @media(min-width:900px){
+    .app{max-width:860px;border-radius:32px;margin:18px auto;min-height:calc(100vh - 36px);}
+  }
+
+  /* ---------- header ---------- */
+  header{
+    padding:22px 20px 16px;
+    text-align:center;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    color:#fff;
+    border-radius:0 0 28px 28px;
+    position:relative;
+    box-shadow:0 8px 24px rgba(255,45,135,.35);
+  }
+  @media(min-width:900px){header{border-radius:32px 32px 28px 28px;}}
+  .brand{
+    font-size:1.7rem;font-weight:800;letter-spacing:.5px;
+    text-shadow:0 2px 8px rgba(0,0,0,.18);
+    animation:glowPulse 2.6s ease-in-out infinite;
+  }
+  @keyframes glowPulse{
+    0%,100%{text-shadow:0 0 8px rgba(255,255,255,.5),0 2px 8px rgba(0,0,0,.18);}
+    50%{text-shadow:0 0 22px rgba(255,255,255,.95),0 0 34px rgba(255,214,0,.6);}
+  }
+  .tagline{
+    margin-top:6px;font-size:.85rem;font-weight:600;
+    background:rgba(255,255,255,.22);
+    display:inline-block;padding:5px 14px;border-radius:999px;
+  }
+  .grade{
+    position:absolute;top:12px;right:14px;
+    background:var(--gold);color:#7a4c00;
+    font-weight:900;font-size:.95rem;
+    padding:7px 11px;border-radius:50%;
+    box-shadow:0 0 0 3px #fff,0 0 18px rgba(255,215,0,.9);
+    animation:spinShine 6s linear infinite;
+  }
+  @keyframes spinShine{
+    0%,100%{transform:rotate(-8deg) scale(1);}
+    50%{transform:rotate(8deg) scale(1.12);}
+  }
+
+  /* ---------- tab bar ---------- */
+  nav.tabs{
+    display:flex;gap:6px;
+    padding:12px 10px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    position:sticky;top:0;z-index:20;
+    background:rgba(255,240,247,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:2px solid var(--soft-pink);
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto;
+    border:none;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:.86rem;
+    padding:10px 16px;border-radius:999px;
+    background:#fff;color:var(--ink);
+    box-shadow:0 2px 8px rgba(255,95,162,.18);
+    transition:all .25s ease;
+    white-space:nowrap;
+  }
+  .tab-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,95,162,.35);}
+  .tab-btn.active{
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    color:#fff;
+    box-shadow:0 4px 16px rgba(255,45,135,.5);
+    transform:translateY(-2px) scale(1.04);
+  }
+
+  /* ---------- panels ---------- */
+  main{flex:1;padding:20px 18px 130px;}
+  .panel{display:none;animation:fadeUp .45s ease;}
+  .panel.active{display:block;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    background:#fff;
+    border-radius:22px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 20px rgba(255,95,162,.16);
+    border:2px solid var(--soft-pink);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;top:0;left:-70%;
+    width:45%;height:100%;
+    background:linear-gradient(105deg,transparent,rgba(255,255,255,.75),transparent);
+    transform:skewX(-20deg);
+    animation:shimmer 5s ease-in-out infinite;
+  }
+  @keyframes shimmer{
+    0%,60%{left:-70%;}
+    100%{left:140%;}
+  }
+  .card h2{
+    font-size:1.25rem;margin-bottom:10px;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .card h3{font-size:1.02rem;margin:12px 0 6px;color:var(--hot-pink);}
+  .card p{font-size:.94rem;line-height:1.55;}
+
+  .hero-emoji{font-size:2.6rem;text-align:center;display:block;margin-bottom:8px;animation:bounceSoft 2.4s ease-in-out infinite;}
+  @keyframes bounceSoft{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .pill{
+    background:linear-gradient(135deg,var(--soft-pink),var(--lav));
+    padding:7px 14px;border-radius:999px;
+    font-size:.82rem;font-weight:700;
+    border:1.5px solid rgba(255,95,162,.35);
+  }
+
+  ul.cute-list{list-style:none;margin-top:8px;}
+  ul.cute-list li{
+    padding:9px 0 9px 34px;position:relative;
+    font-size:.95rem;font-weight:600;
+    border-bottom:1px dashed var(--soft-pink);
+  }
+  ul.cute-list li:last-child{border-bottom:none;}
+  ul.cute-list li::before{
+    content:"✨";position:absolute;left:4px;
+    animation:twinkle 1.8s ease-in-out infinite;
+  }
+  ul.cute-list li:nth-child(2n)::before{content:"💖";animation-delay:.4s;}
+  ul.cute-list li:nth-child(3n)::before{content:"🌸";animation-delay:.8s;}
+  @keyframes twinkle{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.25);}}
+
+  /* ---------- pricing ---------- */
+  .price-card{
+    text-align:center;
+    border-width:2.5px;
+  }
+  .price-card .amount{
+    font-size:1.9rem;font-weight:900;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    display:block;margin:6px 0;
+  }
+  .price-card .per{font-size:.8rem;opacity:.75;font-weight:700;}
+  .best-badge{
+    display:inline-block;
+    background:var(--gold);color:#7a4c00;
+    font-size:.72rem;font-weight:900;
+    padding:4px 12px;border-radius:999px;
+    margin-bottom:8px;letter-spacing:.5px;
+    box-shadow:0 0 12px rgba(255,215,0,.7);
+  }
+  .guarantee{
+    text-align:center;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    color:#fff;border:none;
+  }
+  .guarantee h2{-webkit-text-fill-color:#fff;color:#fff;}
+  .guarantee p{color:#ffeaf4;}
+
+  /* ---------- before / after ---------- */
+  .ba-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .ba-item{border-radius:16px;overflow:hidden;border:2px solid var(--soft-pink);background:#fff;}
+  .ba-item svg{display:block;width:100%;height:auto;}
+  .ba-label{
+    text-align:center;font-weight:800;font-size:.8rem;
+    padding:7px 4px;letter-spacing:1px;
+  }
+  .ba-label.before{background:#fde2e2;color:#b91c1c;}
+  .ba-label.after{background:#dcfce7;color:#15803d;}
+
+  /* ---------- call button ---------- */
+  .call-dock{
+    position:fixed;bottom:0;left:0;right:0;z-index:30;
+    display:flex;justify-content:center;
+    padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top,rgba(255,240,247,.97) 55%,transparent);
+    pointer-events:none;
+  }
+  .call-btn{
+    pointer-events:auto;
+    display:flex;align-items:center;gap:12px;
+    width:100%;max-width:480px;
+    text-decoration:none;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    color:#fff;
+    padding:14px 20px;border-radius:999px;
+    box-shadow:0 8px 26px rgba(255,45,135,.55),0 0 0 3px rgba(255,255,255,.7) inset;
+    animation:pulseBtn 2s ease-in-out infinite;
+  }
+  @keyframes pulseBtn{
+    0%,100%{transform:scale(1);box-shadow:0 8px 26px rgba(255,45,135,.55),0 0 0 3px rgba(255,255,255,.7) inset;}
+    50%{transform:scale(1.03);box-shadow:0 10px 34px rgba(255,45,135,.8),0 0 0 3px rgba(255,255,255,.9) inset;}
+  }
+  .call-btn .phone-ico{font-size:1.7rem;animation:ring 2s ease-in-out infinite;}
+  @keyframes ring{0%,100%{transform:rotate(0);}5%,15%{transform:rotate(-14deg);}10%,20%{transform:rotate(14deg);}25%{transform:rotate(0);}}
+  .call-btn .txt{display:flex;flex-direction:column;line-height:1.25;}
+  .call-btn .txt b{font-size:1rem;letter-spacing:.4px;}
+  .call-btn .txt span{font-size:.72rem;opacity:.95;}
+
+  .mini-call{
+    display:inline-flex;align-items:center;gap:8px;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    color:#fff;text-decoration:none;font-weight:800;
+    padding:11px 22px;border-radius:999px;font-size:.95rem;
+    box-shadow:0 6px 18px rgba(255,45,135,.45);
+    margin-top:12px;
+    transition:transform .2s;
+  }
+  .mini-call:hover{transform:scale(1.05);}
+
+  .deal-tag{
+    display:inline-block;
+    background:linear-gradient(135deg,#f59e0b,var(--gold));
+    color:#5b3800;font-weight:900;font-size:.74rem;
+    padding:4px 12px;border-radius:999px;margin-bottom:6px;
+    letter-spacing:.4px;
+  }
+
+  footer{
+    text-align:center;font-size:.78rem;
+    padding:10px 16px 4px;opacity:.8;font-weight:600;
+  }
+</style>
+</head>
+<body>
+
+<div class="sparkle-field" id="sparkleField"></div>
+
+<div class="app">
+
+  <header>
+    <div class="grade">A+</div>
+    <div class="brand">✨ Kate Cook Cleaning ✨</div>
+    <div class="tagline">💖 Super High Quality Cleaning — Guaranteed 100% 💖</div>
+  </header>
+
+  <nav class="tabs" id="tabBar">
+    <button class="tab-btn active" data-tab="home">🏠 Home</button>
+    <button class="tab-btn" data-tab="services">🧹 Services</button>
+    <button class="tab-btn" data-tab="airbnb">🏡 Airbnb</button>
+    <button class="tab-btn" data-tab="pricing">💰 Pricing</button>
+    <button class="tab-btn" data-tab="gallery">📸 Before &amp; After</button>
+    <button class="tab-btn" data-tab="about">💕 About Kate</button>
+  </nav>
+
+  <main>
+
+    <!-- ============ HOME ============ -->
+    <section class="panel active" id="home">
+      <div class="card">
+        <span class="hero-emoji">🧼✨🫧</span>
+        <h2>Hi, I'm Kate! Your home's new best friend 💕</h2>
+        <p>A+ <b>SUPER HIGH QUALITY CLEANING</b> for homes &amp; Airbnbs — sweeping, mopping, dusting, wall wiping, floor scrubbing, and pro-level organizing that makes <i>everything</i> shine. Very affordable pricing and I'm very good at what I do. I promise you will not be disappointed — my work is always 100%! 💯</p>
+        <div class="pill-row">
+          <span class="pill">📍 Albany County</span>
+          <span class="pill">📍 Rensselaer County</span>
+          <span class="pill">📍 Saratoga County</span>
+          <span class="pill">📍 + Surrounding Areas</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Why everyone loves Kate ✨</h2>
+        <ul class="cute-list">
+          <li>A+ super high quality cleaning, every single visit</li>
+          <li>Residential homes AND Airbnb turnovers</li>
+          <li>Amazing at organizing — everything in its place &amp; shining</li>
+          <li>Very affordable pricing that fits your budget</li>
+          <li>Well-hygiened, outgoing &amp; friendly</li>
+          <li>Rental contracts available for Airbnb hosts</li>
+          <li>Work is always 100% — satisfaction promised!</li>
+        </ul>
+      </div>
+
+      <div class="card guarantee">
+        <h2>💎 The Kate Promise 💎</h2>
+        <p>"Cleaning is my specialty. I promise you will not be disappointed — the work is always 100%!" — Kate 💋</p>
+        <a class="mini-call" href="tel:+15184455742" style="background:#fff;color:var(--hot-pink);">📞 Call Now — (518) 445-5742</a>
+      </div>
+    </section>
+
+    <!-- ============ SERVICES ============ -->
+    <section class="panel" id="services">
+      <div class="card">
+        <span class="hero-emoji">🧹🫧</span>
+        <h2>Residential Cleaning Services</h2>
+        <p>Everything your home needs to sparkle, top to bottom:</p>
+        <ul class="cute-list">
+          <li><b>Sweeping</b> — every corner, every crumb, gone</li>
+          <li><b>Mopping</b> — floors so clean they gleam</li>
+          <li><b>Dusting</b> — shelves, surfaces, blinds &amp; baseboards</li>
+          <li><b>Wiping Walls</b> — scuffs, smudges &amp; marks erased</li>
+          <li><b>Scrubbing Floors</b> — deep scrub for that brand-new look</li>
+          <li><b>Organizing</b> — closets, kitchens, pantries &amp; play areas made perfect</li>
+          <li><b>Kitchens &amp; Bathrooms</b> — sanitized, shined &amp; smelling amazing</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>✨ The Signature Shine ✨</h2>
+        <p>My specialty is making <b>everything the best it can be and SHINE</b>. I don't just clean — I organize, refresh, and leave your space feeling like a brand new home. Deep cleans available for move-ins, move-outs, and homes that need extra love. 💗</p>
+        <a class="mini-call" href="tel:+15184455742">📞 Book Your Sparkle — (518) 445-5742</a>
+      </div>
+    </section>
+
+    <!-- ============ AIRBNB ============ -->
+    <section class="panel" id="airbnb">
+      <div class="card">
+        <span class="hero-emoji">🏡🔑✨</span>
+        <h2>Airbnb Property Cleaning</h2>
+        <p>5-star reviews start with a 5-star clean! I specialize in fast, flawless Airbnb turnovers so every guest walks into a spotless, shiny, hotel-fresh space.</p>
+        <ul class="cute-list">
+          <li>Full turnover cleans between guests</li>
+          <li>Fresh linens &amp; beds made picture-perfect</li>
+          <li>Bathrooms &amp; kitchens sanitized and shining</li>
+          <li>Restocking checks (soap, paper, essentials)</li>
+          <li>Staging &amp; organizing for that "wow" first impression</li>
+          <li>Damage/issue reporting after every clean</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="deal-tag">🌟 SCHEDULED DEALS 🌟</span>
+        <h2>Rental Contracts = Big Savings</h2>
+        <p>Lock in a rental contract for your Airbnb and get VIP treatment plus exclusive deals:</p>
+        <h3>💝 Contract Bonuses</h3>
+        <ul class="cute-list">
+          <li><b>Recurring schedule discount</b> — save on every turnover with a weekly/biweekly contract</li>
+          <li><b>Multi-property deal</b> — extra savings when I clean 2+ of your listings</li>
+          <li><b>Priority booking</b> — contract clients get first pick of turnover slots</li>
+          <li><b>Loyalty bonus</b> — long-term contracts earn free deep cleans</li>
+          <li><b>Flexible scheduling</b> — synced to your guest calendar</li>
+        </ul>
+        <p style="margin-top:10px;">Hosts: let's set up a contract that keeps your calendar full and your reviews glowing! ⭐⭐⭐⭐⭐</p>
+        <a class="mini-call" href="tel:+15184455742">📞 Discuss Airbnb Contracts — (518) 445-5742</a>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section class="panel" id="pricing">
+      <div class="card">
+        <span class="hero-emoji">💰💖</span>
+        <h2>Very Affordable Pricing</h2>
+        <p>High-quality cleaning that doesn't break the bank. Simple, honest pricing for a typical house:</p>
+      </div>
+
+      <div class="card price-card">
+        <h2>🏠 2-Bedroom Home</h2>
+        <span class="amount">$100–150</span>
+        <span class="per">per visit</span>
+        <p style="margin-top:8px;">Sweeping, mopping, dusting, bathrooms, kitchen &amp; more!</p>
+      </div>
+
+      <div class="card price-card">
+        <span class="best-badge">💖 MOST POPULAR 💖</span>
+        <h2>🏡 3–4 Bedroom Home</h2>
+        <span class="amount">$150–250+</span>
+        <span class="per">per visit</span>
+        <p style="margin-top:8px;">Full-home sparkle treatment, top to bottom.</p>
+      </div>
+
+      <div class="card price-card">
+        <h2>✨ Deep Cleans</h2>
+        <span class="amount">$250–500+</span>
+        <span class="per">per deep clean</span>
+        <p style="margin-top:8px;">Wall wiping, floor scrubbing, inside appliances, organizing — the works! Perfect for move-ins, move-outs &amp; seasonal refreshes.</p>
+      </div>
+
+      <div class="card guarantee">
+        <h2>💎 100% Quality Promise</h2>
+        <p>Every price includes my A+ guarantee — you will not be disappointed! Airbnb contract clients get special scheduled deals &amp; bonuses. 💕</p>
+        <a class="mini-call" href="tel:+15184455742" style="background:#fff;color:var(--hot-pink);">📞 Get Your Quote — (518) 445-5742</a>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section class="panel" id="gallery">
+      <div class="card">
+        <span class="hero-emoji">📸✨</span>
+        <h2>Before &amp; After Samples</h2>
+        <p>Sample illustrations of the Kate Cook transformation — from "help!" to <b>heavenly</b>. 💫</p>
+      </div>
+
+      <div class="card">
+        <h3>🛋️ Living Room Glow-Up</h3>
+        <div class="ba-pair">
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Messy living room before cleaning">
+              <rect width="200" height="150" fill="#d8cfc4"/>
+              <rect y="100" width="200" height="50" fill="#b0a08e"/>
+              <rect x="20" y="70" width="80" height="35" rx="6" fill="#8d7b6a"/>
+              <rect x="25" y="58" width="70" height="16" rx="5" fill="#7a6959"/>
+              <circle cx="150" cy="120" r="9" fill="#9c8a76"/>
+              <circle cx="170" cy="130" r="6" fill="#9c8a76"/>
+              <circle cx="130" cy="135" r="5" fill="#8a7864"/>
+              <rect x="120" y="95" width="26" height="8" rx="2" fill="#6f5f50" transform="rotate(-12 133 99)"/>
+              <rect x="150" y="88" width="26" height="8" rx="2" fill="#7d6c5b" transform="rotate(9 163 92)"/>
+              <rect x="30" y="20" width="42" height="30" rx="3" fill="#c4b8a9"/>
+              <path d="M32 22 L70 48 M70 22 L32 48" stroke="#a2937f" stroke-width="2"/>
+              <path d="M110 30 q6 -12 12 0 q6 -12 12 0" stroke="#8a7864" stroke-width="2.5" fill="none"/>
+              <circle cx="60" cy="125" r="4" fill="#8a7864"/>
+              <circle cx="80" cy="132" r="3" fill="#9c8a76"/>
+              <text x="100" y="145" font-size="8" fill="#6f5f50" text-anchor="middle">dust · clutter · scuffs</text>
+            </svg>
+            <div class="ba-label before">😩 BEFORE</div>
+          </div>
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sparkling clean living room after cleaning">
+              <rect width="200" height="150" fill="#fff5fa"/>
+              <rect y="100" width="200" height="50" fill="#ffd6e8"/>
+              <rect y="100" width="200" height="6" fill="#ffc2dd"/>
+              <rect x="20" y="70" width="80" height="35" rx="6" fill="#ff8fbf"/>
+              <rect x="25" y="58" width="70" height="16" rx="5" fill="#ff6fae"/>
+              <rect x="30" y="20" width="42" height="30" rx="3" fill="#cdefff"/>
+              <rect x="33" y="23" width="36" height="24" rx="2" fill="#eafaff"/>
+              <rect x="120" y="60" width="50" height="45" rx="4" fill="#e9d5ff"/>
+              <rect x="126" y="66" width="38" height="8" rx="2" fill="#c9a8f5"/>
+              <rect x="126" y="78" width="38" height="8" rx="2" fill="#c9a8f5"/>
+              <rect x="126" y="90" width="38" height="8" rx="2" fill="#c9a8f5"/>
+              <path d="M100 15 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#ffd700"/>
+              <path d="M160 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ff8fbf"/>
+              <path d="M40 118 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff"/>
+              <path d="M150 120 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ffd700"/>
+              <text x="100" y="145" font-size="8" fill="#c2568c" text-anchor="middle">✦ organized · dusted · shining ✦</text>
+            </svg>
+            <div class="ba-label after">✨ AFTER</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🍳 Kitchen Deep Clean</h3>
+        <div class="ba-pair">
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dirty kitchen before cleaning">
+              <rect width="200" height="150" fill="#d6ccc0"/>
+              <rect y="95" width="200" height="55" fill="#a89684"/>
+              <rect x="15" y="55" width="75" height="40" rx="3" fill="#8d7b6a"/>
+              <rect x="20" y="35" width="65" height="16" rx="2" fill="#7a6959"/>
+              <circle cx="40" cy="63" r="6" fill="#6f5f50"/>
+              <circle cx="60" cy="63" r="6" fill="#6f5f50"/>
+              <rect x="110" y="50" width="70" height="45" rx="3" fill="#998673"/>
+              <path d="M115 55 q8 10 0 20 q8 10 0 18" stroke="#7a6959" stroke-width="2.5" fill="none"/>
+              <ellipse cx="145" cy="70" rx="14" ry="7" fill="#8a7864"/>
+              <ellipse cx="163" cy="80" rx="10" ry="5" fill="#7d6c5b"/>
+              <circle cx="35" cy="115" r="5" fill="#8a7864"/>
+              <circle cx="55" cy="125" r="4" fill="#9c8a76"/>
+              <circle cx="160" cy="118" r="6" fill="#8a7864"/>
+              <path d="M90 20 q5 -10 10 0 q5 -10 10 0" stroke="#8a7864" stroke-width="2.5" fill="none"/>
+              <text x="100" y="145" font-size="8" fill="#6f5f50" text-anchor="middle">grease · dishes · grime</text>
+            </svg>
+            <div class="ba-label before">😩 BEFORE</div>
+          </div>
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sparkling kitchen after cleaning">
+              <rect width="200" height="150" fill="#fff5fa"/>
+              <rect y="95" width="200" height="55" fill="#e9d5ff"/>
+              <rect y="95" width="200" height="6" fill="#dcbdfc"/>
+              <rect x="15" y="55" width="75" height="40" rx="3" fill="#ff8fbf"/>
+              <rect x="20" y="35" width="65" height="16" rx="2" fill="#ff6fae"/>
+              <circle cx="40" cy="63" r="6" fill="#fff"/>
+              <circle cx="60" cy="63" r="6" fill="#fff"/>
+              <rect x="110" y="50" width="70" height="45" rx="3" fill="#ffd6e8"/>
+              <rect x="116" y="56" width="58" height="14" rx="2" fill="#fff0f7"/>
+              <rect x="116" y="74" width="58" height="14" rx="2" fill="#fff0f7"/>
+              <path d="M60 15 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#ffd700"/>
+              <path d="M140 22 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ff8fbf"/>
+              <path d="M30 110 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ffd700"/>
+              <path d="M170 112 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff"/>
+              <text x="100" y="145" font-size="8" fill="#c2568c" text-anchor="middle">✦ degreased · sanitized · gleaming ✦</text>
+            </svg>
+            <div class="ba-label after">✨ AFTER</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🛁 Bathroom Refresh</h3>
+        <div class="ba-pair">
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grimy bathroom before cleaning">
+              <rect width="200" height="150" fill="#cfc6ba"/>
+              <rect y="100" width="200" height="50" fill="#a89684"/>
+              <rect x="20" y="60" width="90" height="40" rx="14" fill="#b3a390"/>
+              <rect x="26" y="66" width="78" height="28" rx="10" fill="#998673"/>
+              <path d="M35 72 q10 8 20 0 M60 80 q10 8 20 0" stroke="#7a6959" stroke-width="2" fill="none"/>
+              <rect x="135" y="45" width="45" height="55" rx="4" fill="#b3a390"/>
+              <ellipse cx="157" cy="58" rx="16" ry="8" fill="#998673"/>
+              <path d="M30 20 L60 45 M60 20 L30 45" stroke="#9c8a76" stroke-width="2"/>
+              <rect x="25" y="15" width="40" height="35" rx="3" fill="none" stroke="#8d7b6a" stroke-width="3"/>
+              <circle cx="70" cy="120" r="5" fill="#8a7864"/>
+              <circle cx="120" cy="128" r="4" fill="#9c8a76"/>
+              <text x="100" y="145" font-size="8" fill="#6f5f50" text-anchor="middle">soap scum · water spots</text>
+            </svg>
+            <div class="ba-label before">😩 BEFORE</div>
+          </div>
+          <div class="ba-item">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shiny bathroom after cleaning">
+              <rect width="200" height="150" fill="#fff5fa"/>
+              <rect y="100" width="200" height="50" fill="#cdefff"/>
+              <rect y="100" width="200" height="6" fill="#b5e4fb"/>
+              <rect x="20" y="60" width="90" height="40" rx="14" fill="#eafaff"/>
+              <rect x="26" y="66" width="78" height="28" rx="10" fill="#cdefff"/>
+              <rect x="135" y="45" width="45" height="55" rx="4" fill="#fff"/>
+              <ellipse cx="157" cy="58" rx="16" ry="8" fill="#eafaff"/>
+              <rect x="25" y="15" width="40" height="35" rx="3" fill="#eafaff" stroke="#ff8fbf" stroke-width="3"/>
+              <path d="M32 22 l8 -4 M30 32 l14 -8" stroke="#fff" stroke-width="2.5"/>
+              <path d="M90 18 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#ffd700"/>
+              <path d="M155 25 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ff8fbf"/>
+              <path d="M50 112 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff"/>
+              <path d="M130 118 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#ffd700"/>
+              <text x="100" y="145" font-size="8" fill="#c2568c" text-anchor="middle">✦ scrubbed · spotless · sparkling ✦</text>
+            </svg>
+            <div class="ba-label after">✨ AFTER</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card guarantee">
+        <h2>Want YOUR before &amp; after? 😍</h2>
+        <p>Your home could be the next glow-up! Call Kate today. 💕</p>
+        <a class="mini-call" href="tel:+15184455742" style="background:#fff;color:var(--hot-pink);">📞 (518) 445-5742</a>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="panel" id="about">
+      <div class="card">
+        <span class="hero-emoji">💁‍♀️💕</span>
+        <h2>Meet Kate Cook</h2>
+        <p>Hi! I'm Kate — outgoing, friendly, and seriously passionate about clean. I'm well-hygiened, detail-obsessed, and cleaning is my <b>specialty</b>. When I say your home will shine, I mean it sparkles like new. ✨</p>
+        <p style="margin-top:10px;">Whether it's your family home or your Airbnb rental, I treat every space like it's my own. I promise you will not be disappointed — my work is always 100%!</p>
+      </div>
+
+      <div class="card">
+        <h2>📍 Servicing Areas</h2>
+        <ul class="cute-list">
+          <li>Albany County</li>
+          <li>Rensselaer County</li>
+          <li>Saratoga County</li>
+          <li>+ All Surrounding Areas</li>
+        </ul>
+      </div>
+
+      <div class="card guarantee">
+        <h2>Let's Make It Sparkle! ✨</h2>
+        <p>Set up a cleaning ASAP or discuss property contracts for your Airbnbs.</p>
+        <a class="mini-call" href="tel:+15184455742" style="background:#fff;color:var(--hot-pink);">📞 Call Kate — (518) 445-5742</a>
+      </div>
+
+      <footer>© Kate Cook Cleaning · A+ Super High Quality Cleaning · (518) 445-5742 💖</footer>
+    </section>
+
+  </main>
+
+  <!-- floating call-now button -->
+  <div class="call-dock">
+    <a class="call-btn" href="tel:+15184455742">
+      <span class="phone-ico">📞</span>
+      <span class="txt">
+        <b>CALL NOW · (518) 445-5742</b>
+        <span>Set up a cleaning ASAP or discuss property contracts for your Airbnbs ✨</span>
+      </span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // ---------- tabs ----------
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panels  = document.querySelectorAll('.panel');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      window.scrollTo({top:0, behavior:'smooth'});
+      burstSparkles();
+    });
+  });
+
+  // ---------- ambient sparkles ----------
+  const field = document.getElementById('sparkleField');
+  const glyphs = ['✨','💖','🌸','🫧','💗','⭐','🩷'];
+  for (let i = 0; i < 26; i++) {
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = glyphs[i % glyphs.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.fontSize = (10 + Math.random() * 16) + 'px';
+    s.style.animationDuration = (7 + Math.random() * 10) + 's';
+    s.style.animationDelay = (-Math.random() * 14) + 's';
+    field.appendChild(s);
+  }
+
+  // ---------- sparkle burst on tab switch ----------
+  function burstSparkles() {
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement('span');
+      s.className = 'sparkle';
+      s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+      s.style.left = (30 + Math.random() * 40) + 'vw';
+      s.style.fontSize = (14 + Math.random() * 14) + 'px';
+      s.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      field.appendChild(s);
+      setTimeout(() => s.remove(), 5000);
+    }
+  }
+</script>
+</body>
+</html>

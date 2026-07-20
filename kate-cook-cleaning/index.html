@@ -275,6 +275,49 @@
     letter-spacing:.4px;
   }
 
+  /* ---------- steps ---------- */
+  .steps{display:flex;flex-direction:column;gap:12px;margin-top:10px;}
+  .step{display:flex;gap:12px;align-items:flex-start;}
+  .step-num{
+    flex:0 0 auto;
+    width:30px;height:30px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;color:#fff;font-size:.95rem;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    box-shadow:0 3px 10px rgba(255,45,135,.4);
+  }
+  .step b{font-size:.96rem;color:var(--hot-pink);}
+  .step p{font-size:.86rem;margin-top:2px;}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  .stat{
+    text-align:center;
+    background:linear-gradient(135deg,var(--blush),var(--lav));
+    border:1.5px solid rgba(255,95,162,.28);
+    border-radius:16px;padding:12px 8px;
+  }
+  .stat b{
+    display:block;font-size:1.35rem;font-weight:900;
+    background:linear-gradient(135deg,var(--hot-pink),var(--purple));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .stat span{font-size:.74rem;font-weight:700;opacity:.8;}
+
+  /* ---------- quotes ---------- */
+  .quote{
+    background:linear-gradient(135deg,var(--blush),#fff);
+    border-left:4px solid var(--hot-pink);
+    border-radius:0 14px 14px 0;
+    padding:12px 14px;margin-top:10px;
+    font-size:.9rem;font-style:italic;line-height:1.5;
+  }
+  .quote span{
+    display:block;margin-top:6px;font-style:normal;
+    font-weight:800;font-size:.78rem;color:var(--hot-pink);
+  }
+
   footer{
     text-align:center;font-size:.78rem;
     padding:10px 16px 4px;opacity:.8;font-weight:600;
@@ -331,6 +374,38 @@
         </ul>
       </div>
 
+      <div class="card">
+        <h2>How It Works 💫</h2>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span><div><b>Call or text</b><p>Reach me at (518) 445-5742 and tell me about your space.</p></div></div>
+          <div class="step"><span class="step-num">2</span><div><b>Free quick quote</b><p>I'll give you an honest, affordable price — no surprises.</p></div></div>
+          <div class="step"><span class="step-num">3</span><div><b>Pick your day</b><p>We schedule a time that works for you (or your guest calendar).</p></div></div>
+          <div class="step"><span class="step-num">4</span><div><b>Sparkle &amp; shine</b><p>I clean top to bottom and leave everything shining. 100% guaranteed!</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>By The Numbers ✨</h2>
+        <div class="stats">
+          <div class="stat"><b>A+</b><span>Quality rating</span></div>
+          <div class="stat"><b>100%</b><span>Satisfaction promise</span></div>
+          <div class="stat"><b>3+</b><span>Counties served</span></div>
+          <div class="stat"><b>⭐⭐⭐⭐⭐</b><span>The goal, every time</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>What I Clean 🧽</h2>
+        <div class="pill-row">
+          <span class="pill">🏠 Houses</span>
+          <span class="pill">🏢 Apartments</span>
+          <span class="pill">🏡 Airbnbs</span>
+          <span class="pill">📦 Move-in / Move-out</span>
+          <span class="pill">✨ Deep cleans</span>
+          <span class="pill">🔁 Recurring visits</span>
+        </div>
+      </div>
+
       <div class="card guarantee">
         <h2>💎 The Kate Promise 💎</h2>
         <p>"Cleaning is my specialty. I promise you will not be disappointed — the work is always 100%!" — Kate 💋</p>
@@ -353,6 +428,49 @@
           <li><b>Organizing</b> — closets, kitchens, pantries &amp; play areas made perfect</li>
           <li><b>Kitchens &amp; Bathrooms</b> — sanitized, shined &amp; smelling amazing</li>
         </ul>
+      </div>
+
+      <div class="card">
+        <h2>✅ Standard Clean Checklist</h2>
+        <p>Every regular visit includes all of this:</p>
+        <ul class="cute-list">
+          <li>Sweep &amp; mop all hard floors</li>
+          <li>Vacuum carpets &amp; rugs</li>
+          <li>Dust surfaces, shelves, décor &amp; baseboards</li>
+          <li>Wipe down counters &amp; tables</li>
+          <li>Kitchen: sink, stovetop, outside of appliances</li>
+          <li>Bathroom: toilet, sink, tub/shower, mirror</li>
+          <li>Empty trash &amp; tidy up</li>
+          <li>Make beds &amp; fluff the space</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="deal-tag">🌟 EXTRA SPARKLE 🌟</span>
+        <h2>✨ Deep Clean Checklist</h2>
+        <p>Everything in a standard clean, <b>PLUS</b>:</p>
+        <ul class="cute-list">
+          <li>Wiping walls — scuffs &amp; marks removed</li>
+          <li>Scrubbing floors on hands &amp; knees for corners</li>
+          <li>Inside oven, fridge &amp; microwave</li>
+          <li>Inside cabinets &amp; drawers</li>
+          <li>Baseboards, door frames &amp; light switches</li>
+          <li>Blinds, window sills &amp; vents</li>
+          <li>Full organizing of closets &amp; pantries</li>
+          <li>Grout, tile &amp; hard water buildup</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>➕ Add-On Services</h2>
+        <ul class="cute-list">
+          <li>Interior windows</li>
+          <li>Laundry &amp; folding</li>
+          <li>Dishes &amp; kitchen reset</li>
+          <li>Garage &amp; basement tidy</li>
+          <li>Post-party / post-event cleanup</li>
+        </ul>
+        <p style="margin-top:8px;">Just ask — I'm happy to customize! 💕</p>
       </div>
 
       <div class="card">
@@ -393,6 +511,44 @@
         <p style="margin-top:10px;">Hosts: let's set up a contract that keeps your calendar full and your reviews glowing! ⭐⭐⭐⭐⭐</p>
         <a class="mini-call" href="tel:+15184455742">📞 Discuss Airbnb Contracts — (518) 445-5742</a>
       </div>
+
+      <div class="card">
+        <h2>🧾 Turnover Checklist</h2>
+        <p>Every guest walks into a perfect, hotel-fresh space:</p>
+        <ul class="cute-list">
+          <li>Strip &amp; remake beds with fresh linens</li>
+          <li>Fresh towels folded &amp; displayed</li>
+          <li>Full bathroom sanitize &amp; shine</li>
+          <li>Kitchen reset — dishes, counters, appliances</li>
+          <li>Sweep, mop &amp; vacuum every room</li>
+          <li>Trash out &amp; liners replaced</li>
+          <li>Restock check: soap, paper, coffee, essentials</li>
+          <li>Staging &amp; styling for that "wow" photo-ready look</li>
+          <li>Damage &amp; low-supply report sent to you</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Why Hosts Trust Kate 🔑</h2>
+        <ul class="cute-list">
+          <li><b>Fast turnovers</b> — ready before check-in, every time</li>
+          <li><b>Calendar-synced</b> — I work around your bookings</li>
+          <li><b>Reliable &amp; consistent</b> — same 5-star clean every visit</li>
+          <li><b>Eyes on your property</b> — I flag issues before guests do</li>
+          <li><b>Restock &amp; supply tracking</b> so you never run out</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>💗 Contract Tiers</h2>
+        <div class="stats">
+          <div class="stat"><b>Weekly</b><span>Best value per turnover</span></div>
+          <div class="stat"><b>Biweekly</b><span>Great for steady bookings</span></div>
+          <div class="stat"><b>On-Call</b><span>Flexible per-guest cleans</span></div>
+          <div class="stat"><b>Multi-Unit</b><span>Extra savings for 2+ listings</span></div>
+        </div>
+        <p style="margin-top:10px;">Custom quotes for every host — call to build your perfect plan! 💕</p>
+      </div>
     </section>
 
     <!-- ============ PRICING ============ -->
@@ -425,6 +581,49 @@
         <p style="margin-top:8px;">Wall wiping, floor scrubbing, inside appliances, organizing — the works! Perfect for move-ins, move-outs &amp; seasonal refreshes.</p>
       </div>
 
+      <div class="card price-card">
+        <span class="deal-tag">🏡 HOST FAVORITE 🏡</span>
+        <h2>🔑 Airbnb Turnovers</h2>
+        <span class="amount">Custom</span>
+        <span class="per">contract rates available</span>
+        <p style="margin-top:8px;">Recurring &amp; multi-property discounts. Call for your host quote!</p>
+      </div>
+
+      <div class="card">
+        <h2>What's Always Included 💖</h2>
+        <ul class="cute-list">
+          <li>All my own supplies &amp; equipment</li>
+          <li>Sweeping, mopping, dusting &amp; vacuuming</li>
+          <li>Kitchen &amp; bathroom cleaning</li>
+          <li>Trash removal &amp; tidy-up</li>
+          <li>My 100% satisfaction guarantee</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>What Affects Your Price 🏷️</h2>
+        <ul class="cute-list">
+          <li><b>Home size</b> — bedrooms &amp; bathrooms</li>
+          <li><b>Clean type</b> — standard vs. deep clean</li>
+          <li><b>Condition</b> — how much love it needs</li>
+          <li><b>Add-ons</b> — windows, laundry, inside appliances</li>
+          <li><b>Frequency</b> — recurring visits cost less!</li>
+        </ul>
+        <p style="margin-top:8px;">Every quote is honest &amp; upfront — no hidden fees, ever. 💕</p>
+      </div>
+
+      <div class="card">
+        <h2>❓ Pricing FAQ</h2>
+        <h3>Do you bring your own supplies?</h3>
+        <p>Yes! Everything's included in your price.</p>
+        <h3>Can I get a recurring discount?</h3>
+        <p>Absolutely — weekly &amp; biweekly clients save on every visit.</p>
+        <h3>How do I get an exact price?</h3>
+        <p>Just call or text (518) 445-5742 and tell me about your space for a free quote!</p>
+        <h3>Do you do move-in / move-out cleans?</h3>
+        <p>Yes — those are deep cleans, perfect for a fresh start.</p>
+      </div>
+
       <div class="card guarantee">
         <h2>💎 100% Quality Promise</h2>
         <p>Every price includes my A+ guarantee — you will not be disappointed! Airbnb contract clients get special scheduled deals &amp; bonuses. 💕</p>
@@ -437,11 +636,13 @@
       <div class="card">
         <span class="hero-emoji">📸✨</span>
         <h2>Before &amp; After Samples</h2>
-        <p>Sample illustrations of the Kate Cook transformation — from "help!" to <b>heavenly</b>. 💫</p>
+        <p>See the Kate Cook transformation — from "help!" to <b>heavenly</b>. 💫</p>
+        <p style="margin-top:8px;font-size:.82rem;opacity:.75;">💡 These are sample illustrations of the kind of glow-up I deliver. Real photos of your finished space are shared after every job — with your permission!</p>
       </div>
 
       <div class="card">
         <h3>🛋️ Living Room Glow-Up</h3>
+        <p style="font-size:.88rem;margin-bottom:4px;">Cluttered, dusty, and scuffed → tidied, dusted, organized, and shining. Every surface wiped and every cushion fluffed. ✨</p>
         <div class="ba-pair">
           <div class="ba-item">
             <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Messy living room before cleaning">
@@ -489,6 +690,7 @@
 
       <div class="card">
         <h3>🍳 Kitchen Deep Clean</h3>
+        <p style="font-size:.88rem;margin-bottom:4px;">Greasy stove, piled dishes, and grimy counters → degreased, sanitized, and gleaming. Even the appliance fronts sparkle. 🧽</p>
         <div class="ba-pair">
           <div class="ba-item">
             <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dirty kitchen before cleaning">
@@ -535,6 +737,7 @@
 
       <div class="card">
         <h3>🛁 Bathroom Refresh</h3>
+        <p style="font-size:.88rem;margin-bottom:4px;">Soap scum, water spots, and cloudy mirrors → scrubbed, spotless, and sparkling clean. Fresh, sanitized, and hotel-worthy. 🛁</p>
         <div class="ba-pair">
           <div class="ba-item">
             <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grimy bathroom before cleaning">
@@ -592,12 +795,48 @@
       </div>
 
       <div class="card">
-        <h2>📍 Servicing Areas</h2>
+        <h2>My Cleaning Values 💗</h2>
         <ul class="cute-list">
-          <li>Albany County</li>
-          <li>Rensselaer County</li>
-          <li>Saratoga County</li>
-          <li>+ All Surrounding Areas</li>
+          <li><b>Detail-obsessed</b> — I notice the little things others miss</li>
+          <li><b>Trustworthy</b> — I treat your home like my own</li>
+          <li><b>Reliable</b> — I show up on time, every time</li>
+          <li><b>Honest pricing</b> — no hidden fees, ever</li>
+          <li><b>100% guaranteed</b> — I'm not done until it shines</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>💬 What Clients Say</h2>
+        <div class="quote">"My house has never looked or smelled so good. Kate is worth every penny!" <span>— Happy Homeowner ⭐⭐⭐⭐⭐</span></div>
+        <div class="quote">"My Airbnb turnovers are flawless now. Guests always mention how clean it is." <span>— Local Host ⭐⭐⭐⭐⭐</span></div>
+        <div class="quote">"So friendly and thorough. She organized my whole kitchen — it's like a new home!" <span>— Repeat Client ⭐⭐⭐⭐⭐</span></div>
+      </div>
+
+      <div class="card">
+        <h2>📍 Servicing Areas</h2>
+        <p>Proudly cleaning homes &amp; Airbnbs across the Capital Region:</p>
+        <h3>Albany County</h3>
+        <div class="pill-row">
+          <span class="pill">Albany</span><span class="pill">Colonie</span><span class="pill">Guilderland</span><span class="pill">Bethlehem</span><span class="pill">Cohoes</span><span class="pill">Watervliet</span>
+        </div>
+        <h3>Rensselaer County</h3>
+        <div class="pill-row">
+          <span class="pill">Troy</span><span class="pill">East Greenbush</span><span class="pill">Rensselaer</span><span class="pill">Brunswick</span><span class="pill">Schodack</span>
+        </div>
+        <h3>Saratoga County</h3>
+        <div class="pill-row">
+          <span class="pill">Saratoga Springs</span><span class="pill">Clifton Park</span><span class="pill">Ballston Spa</span><span class="pill">Malta</span><span class="pill">Halfmoon</span>
+        </div>
+        <p style="margin-top:12px;">➕ Plus all surrounding areas — just ask if you're nearby! 💕</p>
+      </div>
+
+      <div class="card">
+        <h2>📅 Booking &amp; Hours</h2>
+        <ul class="cute-list">
+          <li>Flexible scheduling 7 days a week</li>
+          <li>Same-week appointments often available</li>
+          <li>Airbnb turnovers synced to your calendar</li>
+          <li>Call or text to set up ASAP!</li>
         </ul>
       </div>
 

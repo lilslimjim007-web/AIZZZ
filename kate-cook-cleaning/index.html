@@ -107,6 +107,8 @@
     border-bottom:2px solid var(--soft-pink);
   }
   nav.tabs::-webkit-scrollbar{display:none;}
+  /* hidden radios drive the tabs — works with zero JavaScript */
+  .tab-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0 0 0 0);}
   .tab-btn{
     flex:0 0 auto;
     border:none;cursor:pointer;
@@ -116,19 +118,38 @@
     box-shadow:0 2px 8px rgba(255,95,162,.18);
     transition:all .25s ease;
     white-space:nowrap;
+    user-select:none;
+    display:inline-block;
   }
   .tab-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,95,162,.35);}
-  .tab-btn.active{
+  #tab-home:checked    ~ nav label[for="tab-home"],
+  #tab-services:checked~ nav label[for="tab-services"],
+  #tab-airbnb:checked  ~ nav label[for="tab-airbnb"],
+  #tab-pricing:checked ~ nav label[for="tab-pricing"],
+  #tab-gallery:checked ~ nav label[for="tab-gallery"],
+  #tab-about:checked   ~ nav label[for="tab-about"]{
     background:linear-gradient(135deg,var(--hot-pink),var(--purple));
     color:#fff;
     box-shadow:0 4px 16px rgba(255,45,135,.5);
     transform:translateY(-2px) scale(1.04);
   }
+  /* keyboard focus ring for accessibility */
+  .tab-input:focus-visible ~ nav label[for="tab-home"],
+  .tab-input:focus-visible ~ nav label[for="tab-services"],
+  .tab-input:focus-visible ~ nav label[for="tab-airbnb"],
+  .tab-input:focus-visible ~ nav label[for="tab-pricing"],
+  .tab-input:focus-visible ~ nav label[for="tab-gallery"],
+  .tab-input:focus-visible ~ nav label[for="tab-about"]{outline:2px solid var(--purple);}
 
   /* ---------- panels ---------- */
   main{flex:1;padding:20px 18px 130px;}
-  .panel{display:none;animation:fadeUp .45s ease;}
-  .panel.active{display:block;}
+  .panel{display:none;}
+  #tab-home:checked    ~ main #home,
+  #tab-services:checked~ main #services,
+  #tab-airbnb:checked  ~ main #airbnb,
+  #tab-pricing:checked ~ main #pricing,
+  #tab-gallery:checked ~ main #gallery,
+  #tab-about:checked   ~ main #about{display:block;animation:fadeUp .45s ease;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
   .card{
@@ -336,19 +357,26 @@
     <div class="tagline">💖 Super High Quality Cleaning — Guaranteed 100% 💖</div>
   </header>
 
+  <input class="tab-input" type="radio" name="tabs" id="tab-home" checked>
+  <input class="tab-input" type="radio" name="tabs" id="tab-services">
+  <input class="tab-input" type="radio" name="tabs" id="tab-airbnb">
+  <input class="tab-input" type="radio" name="tabs" id="tab-pricing">
+  <input class="tab-input" type="radio" name="tabs" id="tab-gallery">
+  <input class="tab-input" type="radio" name="tabs" id="tab-about">
+
   <nav class="tabs" id="tabBar">
-    <button class="tab-btn active" data-tab="home">🏠 Home</button>
-    <button class="tab-btn" data-tab="services">🧹 Services</button>
-    <button class="tab-btn" data-tab="airbnb">🏡 Airbnb</button>
-    <button class="tab-btn" data-tab="pricing">💰 Pricing</button>
-    <button class="tab-btn" data-tab="gallery">📸 Before &amp; After</button>
-    <button class="tab-btn" data-tab="about">💕 About Kate</button>
+    <label class="tab-btn" for="tab-home">🏠 Home</label>
+    <label class="tab-btn" for="tab-services">🧹 Services</label>
+    <label class="tab-btn" for="tab-airbnb">🏡 Airbnb</label>
+    <label class="tab-btn" for="tab-pricing">💰 Pricing</label>
+    <label class="tab-btn" for="tab-gallery">📸 Before &amp; After</label>
+    <label class="tab-btn" for="tab-about">💕 About Kate</label>
   </nav>
 
   <main>
 
     <!-- ============ HOME ============ -->
-    <section class="panel active" id="home">
+    <section class="panel" id="home">
       <div class="card">
         <span class="hero-emoji">🧼✨🫧</span>
         <h2>Hi, I'm Kate! Your home's new best friend 💕</h2>
@@ -865,16 +893,12 @@
 </div>
 
 <script>
-  // ---------- tabs ----------
-  const buttons = document.querySelectorAll('.tab-btn');
-  const panels  = document.querySelectorAll('.panel');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-      btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  // Tabs work with pure CSS (hidden radios) — no JS needed to switch them.
+  // This script only adds optional extras: sparkle bursts + scroll-to-top on switch.
+  const labels = document.querySelectorAll('.tab-btn');
+  labels.forEach(label => {
+    label.addEventListener('click', () => {
+      label.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
       window.scrollTo({top:0, behavior:'smooth'});
       burstSparkles();
     });
